@@ -14,32 +14,26 @@ public class Main {
 		int bucketSize = Integer.parseInt(st.nextToken());
 		int apple = Integer.parseInt(br.readLine());
 		
-		List<Integer> fall = new ArrayList<>();
-		for(int i = 0; i < apple; i++) {
-			fall.add(Integer.parseInt(br.readLine()));
-		}
 		
-		int front = 1, back = bucketSize;
-		int count = 0;
+		int left = 0;
+		int right = bucketSize - 1;
+		int move = 0;
+		
 		for(int i = 0; i < apple; i++) {
-			int position = fall.get(i);
+			int position = Integer.parseInt(br.readLine()) - 1;
 			
-			if(position > back) {
-				while(back < position && back < screenSize){
-					count++;
-					front++;
-					back++;
-				}
+			if(position > right) {
+				move += position - right;
+				right = position;
+				left = right - (bucketSize - 1);
 			}
-			else if(position < front) {
-				while(front > position && front > 1) {
-					count++;
-					front--;
-					back--;
-				}
+			else if(position < left) {
+				move += left - position;
+				left = position;
+				right = left + (bucketSize - 1);
 			}
 		} 
-		System.out.println(count);
+		System.out.println(move);
 
 	}
 
