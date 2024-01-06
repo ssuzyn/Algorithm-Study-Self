@@ -12,7 +12,7 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		
-		int length = 0;
+		long length = 0;
 		List<ArrayList<Integer>> color = new ArrayList<>();
 		for(int i = 0; i < N; i++) {
 			color.add(new ArrayList<>());
