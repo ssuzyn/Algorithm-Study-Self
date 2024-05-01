@@ -1,41 +1,32 @@
 import java.util.*;
 
 class Solution {
-    Map<String, PriorityQueue<String>> graph = new HashMap<>();
+    boolean [] visit;
+    List<String> result = new ArrayList<>();
+    
     
     public String[] solution(String[][] tickets) {
+        visit = new boolean[tickets.length];
         
-        for(String[] ticket: tickets){
-            
-            String key = ticket[0];
-            if(!graph.containsKey(key)){
-                graph.put(key, new PriorityQueue<>());
-            }
-            
-            graph.get(key).offer(ticket[1]);
-        }
+        dfs(0, "ICN", "ICN", tickets);
+        Collections.sort(result);
         
+        return result.get(0).split(" ");
         
-        return dfs(new ArrayList<>(), "ICN").toArray(new String[0]);
     }
     
-    public List<String> dfs(List<String> answer, String key){
-        if(!graph.containsKey(key) || graph.get(key).isEmpty()){
-            answer.add(key);
-            return answer;
-        }
-        
-        answer.add(key);
-        
-        List<String> right = dfs(new ArrayList<>(), graph.get(key).poll());
-        
-        if(!graph.get(key).isEmpty()){
-            List<String> left = dfs(new ArrayList<>(), graph.get(key).poll());
-            answer.addAll(left);
-        }
-        
-        answer.addAll(right);
-        
-        return answer;
+    private void dfs(int depth, String now, String path, String[][] tickets) {
+    	if(depth == tickets.length) {
+    		result.add(path);
+    		return;
+    	}
+    	
+    	for(int i = 0; i < tickets.length; i++) {
+    		if(!visit[i] && tickets[i][0].equals(now)) {
+    			visit[i] = true;
+    			dfs(depth+1, tickets[i][1], path + " " + tickets[i][1], tickets);
+    			visit[i] = false;
+    		}
+    	}
     }
 }
