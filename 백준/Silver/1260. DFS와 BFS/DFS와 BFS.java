@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class Main {
 		visited[start] = true;
 		System.out.print(start + " ");
 		
+		// 현재 노드와 연결된 다른 노드들을 재귀적으로 방문
 		for(int i = 0; i < graph[start].size(); i++) {
 			int tmp = graph[start].get(i);
 			if(!visited[tmp]) dfs(tmp);
@@ -32,7 +34,8 @@ public class Main {
 			int cur = q.poll();
 			System.out.print(cur + " ");
 			
-			for(int i = 0; i < graph[cur].size(); i++) {
+			// 해당 노드와 연결된, 아직 방문하지 않은 노드들을 큐에 삽입
+			for(int i = 0; i < graph[cur].size(); i++) { 
 				int tmp = graph[cur].get(i);
 				if(!visited[tmp]) {
 					q.add(tmp);
@@ -65,14 +68,15 @@ public class Main {
 			graph[v2].add(v1);
 		}
 		
-		for(int i = 1; i <= N; i++) {
+		// 정점 번호가 작은 것을 먼저 방문하기 위해 오름차순 정렬
+		for(int i = 1; i <= N; i++) { 
 			Collections.sort(graph[i]);
 		}
 		
 		dfs(V);
 		System.out.println();
 		
-		visited = new boolean[N + 1];
+		Arrays.fill(visited, false);
 		bfs(V);
 	}
 
