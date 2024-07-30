@@ -5,37 +5,27 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.StringTokenizer;
 
-class Node{
-	int x;
-	int y;
-	
-	Node(int x, int y){
-		this.x = x;
-		this.y = y;
-	}
-	
-	public int getX() {
-		return this.x;
-	}
-	
-	public int getY() {
-		return this.y;
-	}
-	
-	public void setX(int x) {
-		this.x = x;
-	}
-}
+
 
 public class Main {
+	
+	static class Node{
+		int x;
+		int y;
+		
+		Node(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+	}
 	
     static char[][] map = new char[8][8];
     static List<Node> walls = new ArrayList<>();
     static int[] dx = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
     static int[] dy = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
     
+
     
     public static boolean isValid(int x, int y) {
     	return x >= 0 && x < 8 && y >= 0 && y < 8;
@@ -64,8 +54,8 @@ public class Main {
     		
     		for(int s = 0; s < size; s++) {
     			Node tmp = q.poll();
-        		x = tmp.getX();
-        		y = tmp.getY();
+        		x = tmp.x;
+        		y = tmp.y;
     			
     			if(map[x][y] == '#') continue;
     			if(x == 0 && y == 7) return 1;
@@ -75,6 +65,8 @@ public class Main {
         			int newY = y + dy[i];
 
     		    	if(isValid(newX, newY)) {
+    		    		if(newX >= 1)
+    		    			if(map[newX-1][newY] == '#') continue;
     		    		if(map[newX][newY] == '.')
     		    			q.offer(new Node(newX, newY));
     		    	}
