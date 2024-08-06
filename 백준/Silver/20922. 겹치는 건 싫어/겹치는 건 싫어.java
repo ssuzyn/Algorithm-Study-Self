@@ -31,6 +31,10 @@ class Main{
             answer = Math.max(answer, end - start);
             check[arr[start]]--;
             start++;
+            
+            if(end == N) {
+                break; // end 포인터가 수열의 끝에 도착하면 종료
+            }
         }
 
         System.out.println(answer);
