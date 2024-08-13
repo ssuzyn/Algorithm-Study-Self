@@ -20,11 +20,11 @@
 
 <p>아래 그림에 나와있는 BT의 루트는 3번 노드이다. 1번 노드는 오른쪽 자식만 가지고 있고, 4와 7은 왼쪽 자식만 가지고 있다. 3과 6은 왼쪽과 오른쪽 자식을 모두 가지고 있다. 나머지 노드는 모두 자식이 없으며, 이러한 노드는 리프 노드라고 부른다.</p>
 
-<p><img alt="" src="https://www.acmicpc.net/upload/images/tree(2).png" style="height:183px; width:250px"></p>
+<p><img alt="" src="" style="height:183px; width:250px"></p>
 
 <p>BT의 모든 노드를 순회하는 방법은 전위 순회(preorder), 중위 순회(inorder), 후위 순회(postorder)로 총 세 가지가 있다. 이 세 방법은 아래에 C 스타일의 의사 코드로 나와 있다. BT의 노드 v에 대해서, v.left는 왼쪽 자식, v.right는 오른쪽 자식을 나타낸다. v가 왼쪽 자식이 없으면 v.left는 ∅와 같고, 오른쪽 자식이 없으면 v.right는 ∅와 같다.</p>
 
-<p><img alt="" src="https://www.acmicpc.net/upload/images/treeorder.png" style="height:150px; width:683px"></p>
+<p><img alt="" src="" style="height:150px; width:683px"></p>
 
 <p>BT를 전위 순회, 중위 순회한 결과가 주어진다. 즉, 위의 함수 중 preorder(root node of BT)와 inorder(root node of BT)를 호출해서 만든 리스트가 주어진다. 두 순회한 결과를 가지고 다시 BT를 만들 수 있다. BT의 전위, 중위 순회한 결과가 주어졌을 때, 후위 순회했을 때의 결과를 구하는 프로그램을 작성하시오.</p>
 
