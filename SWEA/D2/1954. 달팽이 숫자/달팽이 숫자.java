@@ -15,21 +15,19 @@ public class Solution {
 
             int value = 1;
             int x = 0, y = 0;
-            int idx = 0;
+            int idx = 0; // 방향 전환을 위한 인덱스
 
             while(value <= N * N){
                 snail[x][y] = value++;
                 int nx = x + dx[idx];
                 int ny = y + dy[idx];
 
-                // 방향 재설정 = 좌표의 경계를 벗어나거나, 숫자가 이미 존재하는 경우
+                // 방향 전환 = 좌표의 경계를 벗어나거나, 숫자가 이미 존재하는 경우
                 if(nx < 0 || nx >= N || ny < 0 || ny >= N || snail[nx][ny] != 0){
                     idx = (idx + 1) % 4;
-                    nx = x + dx[idx];
-                    ny = y + dy[idx];
                 }
-                x = nx;
-                y = ny;
+                x = x + dx[idx];
+                y = y + dy[idx];
             }
 
             System.out.println("#" + t);
