@@ -11,8 +11,8 @@ public class Main {
 		while(sugar >= 0) {
 			if(sugar % 5 == 0) {
 				answer += sugar / 5;
-				sugar = 0;
-				break;
+				System.out.println(answer);
+				return;
 			}
 			
 			sugar = sugar - 3;
@@ -20,8 +20,7 @@ public class Main {
 			
 		}
 		
-		if(sugar != 0) System.out.println(-1);
-		else System.out.println(answer);
+		System.out.println(-1);
 
 	}
 
