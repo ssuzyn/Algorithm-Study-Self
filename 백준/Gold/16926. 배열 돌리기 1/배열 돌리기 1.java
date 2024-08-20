@@ -3,6 +3,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+/***
+ * 16926. 배열돌리기1
+ * 1차 시도 = 메모리: 35820 KB, 시간: 1264 ms
+ */
 public class Main {
 
     static int N, M, R;
