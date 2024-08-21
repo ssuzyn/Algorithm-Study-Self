@@ -32,11 +32,13 @@ public class Solution {
     }
 
     private static void solve(int cnt, int sum){
-        if(cnt == N){
-            if(sum >= B){
-                minDiff = Math.min(minDiff, sum - B);
-            }
+    	if(sum >= B){
+            minDiff = Math.min(minDiff, sum - B);
             return;
+        }
+        
+        if(cnt == N) {
+        	return;
         }
 
         solve(cnt + 1, sum + height[cnt]);
