@@ -16,40 +16,43 @@ public class Main {
 		map = new char[N][N];
 		
 		for(int i = 0; i < N; i++) {
-			String line = br.readLine();
-			for(int j = 0; j < N; j++) {
-				map[i][j] = line.charAt(j);
-			}
+			map[i] = br.readLine().toCharArray();
 		}
 		
-		int section = 0;
-		visited = new boolean[N][N];
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < N; j++) {
-				if(!visited[i][j]) {
-					dfs(i, j, map[i][j], false);
-					section++;
-				}
-			}
-		}
-		System.out.print(section + " ");
-		
-		section = 0;
-		visited = new boolean[N][N];
-		for(int i = 0; i < N; i++) {
-			for(int j = 0; j < N; j++) {
-				if(!visited[i][j]) {
-					dfs(i, j, map[i][j], true);
-					section++;
-				}
-			}
-		}
-		System.out.println(section);
+		System.out.print(countSections() + " "); // 적록색약인 사람이 봤을 때
+		convertMap();
+		System.out.println(countSections()); // 적록색약이 아닌 사람이 봤을 때
 	
 
 	}
 	
-	private static void dfs(int x, int y, char color, boolean blindness) {
+	private static void convertMap() {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (map[i][j] == 'G') {
+					map[i][j] = 'R'; // G를 R로 변환
+				}
+			}
+		}
+	}
+	
+	private static int countSections() {
+		int section = 0;
+		visited = new boolean[N][N];
+		
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if(!visited[i][j]) {
+					dfs(i, j, map[i][j]);
+					section++;
+				}
+			}
+		}
+		
+		return section;
+	}
+	
+	private static void dfs(int x, int y, char color) {
 		visited[x][y] = true;
 		
 		for(int i = 0; i < 4; i++) {
@@ -59,19 +62,7 @@ public class Main {
 			if(nx < 0 || nx >= N || ny < 0 || ny >= N || visited[nx][ny]) continue;
 			
 
-			if(map[nx][ny] == color) {
-				dfs(nx, ny, color, blindness);
-			}
-			
-			if(blindness) {
-				if(color == 'G' && map[nx][ny] == 'R') {
-					dfs(nx, ny, color, blindness);
-				}
-				else if(color == 'R' && map[nx][ny] == 'G') {
-					dfs(nx, ny, color, blindness);
-				}
-			}
-			
+			if(map[nx][ny] == color) dfs(nx, ny, color);
 		}
 	}
 
