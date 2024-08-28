@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.StringTokenizer;
 
 public class Solution {
@@ -12,7 +13,7 @@ public class Solution {
     static boolean[][] visited;
     static int[] dx = {1, 1, -1, -1};
     static int[] dy = {1, -1, -1, 1};
-    static ArrayList<Integer> desert = new ArrayList<>();
+    static HashSet<Integer> desert = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -70,7 +71,7 @@ public class Solution {
                 desert.add(cafe[nx][ny]);
                 dfs(nx, ny, i);
                 visited[nx][ny] = false;
-                desert.remove(Integer.valueOf(cafe[nx][ny]));
+                desert.remove(cafe[nx][ny]);
             }
         }
     }
