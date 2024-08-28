@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 public class Main {
 	
 	static int answer;
-	static int[] check;
+	static boolean[] check;
 	static ArrayList<Integer>[] friends;
 
 	public static void main(String[] args) throws IOException{
@@ -16,6 +16,7 @@ public class Main {
         int N = Integer.parseInt(st.nextToken()); // 사람 수
         int M = Integer.parseInt(st.nextToken()); // 친구 관계 수
         
+    	check = new boolean[N];
         friends = new ArrayList[N];
         for(int i = 0; i < N; i++) {
         	friends[i] = new ArrayList<>();
@@ -31,10 +32,7 @@ public class Main {
         
         answer = 0;
         for(int i = 0; i < N; i++) {
-        	check = new int[N];
-        	check[i] = 1;
             dfs(i, 1);
-            
             if(answer == 1) break;
         }
         
@@ -43,19 +41,19 @@ public class Main {
 	
 	static void dfs(int x, int depth) {
 		
-		if(check[x] == 5) {
+		if(depth == 5) {
 			answer = 1;
 			return;
 		}
 		
+		check[x] = true;
 		for(int i = 0; i < friends[x].size(); i++) {
 			int next = friends[x].get(i);
-			if(check[next] == 0) {
-				check[next] = check[x] + 1;
+			if(!check[next]) {
 				dfs(next, depth + 1);
-				check[next] = 0;
 			}
 		}
+		check[x] = false;
 	}
 
 }
