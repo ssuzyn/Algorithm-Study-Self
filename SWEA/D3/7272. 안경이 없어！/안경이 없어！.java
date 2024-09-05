@@ -19,26 +19,23 @@ public class Solution {
             st = new StringTokenizer(br.readLine());
             String input1 = st.nextToken();
             String input2 = st.nextToken();
-
+            String result = "SAME";
             if(input1.length() != input2.length()){
-                sb.append("#" + t + " " + "DIFF" + "\n");
-                continue;
-            }
-
-            boolean diff = false;
-            for(int i = 0; i < input1.length(); i++){
-                if(compare(input1.charAt(i)) != compare(input2.charAt(i))){
-                    diff = true;
-                    break;
-                }
-            }
-
-            if(diff){
-                sb.append("#" + t + " " + "DIFF" + "\n");
+                result = "DIFF";
             }
             else{
-                sb.append("#" + t + " " + "SAME" + "\n");
+                for(int i = 0; i < input1.length(); i++){
+                    if(compare(input1.charAt(i)) != compare(input2.charAt(i))){
+                        result = "DIFF";
+                        break;
+                    }
+                }
             }
+            
+
+            
+            sb.append("#" + t + " " + result + "\n");
+            
         }
 
         System.out.println(sb);
