@@ -26,7 +26,7 @@ public class Main {
         for(int[] p : position){
             int x = p[0];
             int y = p[1];
-            if(dfs(x, y, baduk[x][y])){
+            if(dfs(x, y)){
                 System.out.println(baduk[x][y]);
                 System.out.println((x+1) + " " + (y+1));
                 return;
@@ -36,7 +36,9 @@ public class Main {
 
     }
 
-    static boolean dfs(int x, int y, int color){
+    static boolean dfs(int x, int y){
+        int color = baduk[x][y];
+
         for(int d = 0; d < 4; d++){
             int count = 1;
 
@@ -44,7 +46,7 @@ public class Main {
                 int nx = x + dx[d] * i;
                 int ny = y + dy[d] * i;
 
-                if (nx < 0 || ny < 0 || nx >= 19 || ny >= 19 || baduk[nx][ny] != color) break;
+                if (isNotBoundary(nx, ny) || isNotSameColor(nx, ny, color)) break;
                 count++;
             }
 
@@ -57,8 +59,8 @@ public class Main {
                 int nextY = y + dy[d] * 5;
 
                 // 6목이 아닌지 확인 (앞뒤에 돌이 있으면 안됨)
-                if ((prevX < 0 || prevY < 0 || prevX >= 19 || prevY >= 19 || baduk[prevX][prevY] != color) &&
-                    (nextX < 0 || nextY < 0 || nextX >= 19 || nextY >= 19 || baduk[nextX][nextY] != color)) {
+                if ((isNotBoundary(prevX, prevY) || isNotSameColor(prevX, prevY, color)) &&
+                    (isNotBoundary(nextX, nextY) || isNotSameColor(nextX, nextY, color)))  {
                     return true; // 승리 조건 성립
                 }
             }
@@ -66,4 +68,13 @@ public class Main {
 
         return false;
     }
+
+    static boolean isNotBoundary(int x, int y){
+        return x < 0 || y < 0 || x >= 19 || y >= 19;
+    }
+
+    static boolean isNotSameColor(int x, int y, int color){
+        return baduk[x][y] != color;
+    }
+
 }
