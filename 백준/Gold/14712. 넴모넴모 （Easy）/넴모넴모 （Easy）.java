@@ -13,43 +13,34 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken()); // 행
         M = Integer.parseInt(st.nextToken()); // 열
-        picked = new boolean[N][M];
+        picked = new boolean[N+1][M+1];
 
-        batch(0, 0);
+        batch(0);
 
         System.out.println(answer);
 
     }
 
-    private static void batch(int start, int cnt){
+    private static void batch(int cnt){
 
-        if(!isSquare(cnt)) answer++;
-
-        if(cnt == N * M) return;
-
-        for(int i = start; i < N * M; i++){
-            int x = i / M; int y = i % M;
-
-            if(!picked[x][y]){
-                picked[x][y] = true;
-                batch(i + 1, cnt + 1);
-                picked[x][y] = false;
-            }
+        if(cnt == N * M) {
+            answer++;
+            return;
         }
-    }
 
-    private static boolean isSquare(int cnt){
-        if(cnt < 4) return false;
+        int x = cnt / M + 1;
+        int y = cnt % M + 1;
 
-        for(int i = 0; i < N-1; i++){
-            for(int j = 0; j < M-1; j++){
-                if(picked[i][j] && picked[i][j+1] &&
-                    picked[i+1][j] && picked[i+1][j+1]){
-                    return true;
-                }
-            }
+        // 2*2 직사각형 만들 수 있는 경우 (x, y) 좌표는 선택하지 않는다.
+        if(picked[x-1][y] && picked[x][y-1] && picked[x-1][y-1]){
+            batch(cnt + 1);
         }
-        return false;
+        else{
+            picked[x][y] = true;
+            batch(cnt + 1);
+            picked[x][y] = false;
+            batch(cnt + 1);
+        }
     }
 
 }
