@@ -1,12 +1,14 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Solution {
 
-    static int N, M, ans, tCnt, sCnt;
+	static int N, M, ans, tCnt, sCnt;
     static int[][] graph;
+    
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
@@ -15,6 +17,11 @@ public class Solution {
             N = Integer.parseInt(br.readLine()); // 학생 수
             M = Integer.parseInt(br.readLine()); // 키 비교 횟수
             graph = new int[N+1][N+1];
+            
+            for(int i = 1; i <= N; i++) {
+            	Arrays.fill(graph[i], Integer.MAX_VALUE/2);
+            }
+            
 
             StringTokenizer st;
             for(int i = 0; i < M; i++){
@@ -24,37 +31,40 @@ public class Solution {
                 graph[from][to] = 1; // from < to : 나보다 큰거 저장
             }
 
-            ans = 0;
-            for(int i = 1; i <= N; i++){
-                tCnt = 0;
-                sCnt = 0;
-                taller(i, new boolean[N+1]);
-                shorter(i, new boolean[N+1]);
+            
+            for(int k = 1; k <= N; k++) {
+            	for(int i = 1; i <= N; i++) {
+            		for(int j = 1; j <= N; j++) {
+            			graph[i][j] = Math.min(graph[i][k] + graph[k][j], graph[i][j]);
+            		}
+            	}
+            }
+            
+            ans = 0; // 자신의 키 순서를 알 수 있는 학생 수
+            for (int i = 1; i <= N; i++) {
+                int greaterCount = 0; // 나보다 큰 학생 수
+                int smallerCount = 0; // 나보다 작은 학생 수
 
-                if(tCnt + sCnt == N - 1) ans++;
+                // 나보다 큰 학생과 작은 학생을 계산
+                for (int j = 1; j <= N; j++) {
+                    if (i != j) {
+                        if (graph[i][j] < Integer.MAX_VALUE / 2) {
+                            greaterCount++; // i보다 큰 j 학생
+                        }
+                        if (graph[j][i] < Integer.MAX_VALUE / 2) {
+                            smallerCount++; // j보다 큰 i 학생
+                        }
+                    }
+                }
+
+                // 자신보다 큰 학생과 작은 학생의 수가 총 N-1명인 경우
+                if (greaterCount + smallerCount == N - 1) {
+                    ans++;
+                }
             }
 
             System.out.println("#" + t + " " + ans);
         }
     }
 
-    static void taller(int cur, boolean[] visited){
-        visited[cur] = true;
-        for(int i = 1; i <= N; i++){
-            if(!visited[i] && graph[cur][i] == 1){
-                tCnt++;
-                taller(i, visited);
-            }
-        }
-    }
-
-    static void shorter(int cur, boolean[] visited){
-        visited[cur] = true;
-        for(int i = 1; i <= N; i++){
-            if(!visited[i] && graph[i][cur] == 1){
-                sCnt++;
-                shorter(i, visited);
-            }
-        }
-    }
 }
