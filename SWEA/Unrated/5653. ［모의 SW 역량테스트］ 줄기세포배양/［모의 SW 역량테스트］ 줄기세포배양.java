@@ -35,7 +35,7 @@ public class Solution {
 			N = Integer.parseInt(st.nextToken()); // 세로 크기
 			M = Integer.parseInt(st.nextToken()); // 가로 크기
 			K = Integer.parseInt(st.nextToken()); // 배양 시간
-			visited = new boolean[N + 2 * K + 1][M + 2 * K + 1]; // 크기 확보
+			visited = new boolean[N + 2 * K][M + 2 * K]; // 크기 확보
 
 			pq = new PriorityQueue<>((c1, c2) -> {
 				return c2.life - c1.life;
@@ -52,7 +52,7 @@ public class Solution {
 				}
 			}
 
-			bfs(); // 세포 배양 및 번식 시뮬레이션 실행
+			bfs();
 			
 			sb.append("#" + t + " " + pq.size() + "\n");
 		}
