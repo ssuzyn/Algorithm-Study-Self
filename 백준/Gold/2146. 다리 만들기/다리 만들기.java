@@ -40,9 +40,9 @@ public class Main {
 		
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				visited = new boolean[N][N];
 				if(map[i][j] > 0) {
-					findBridge(i, j);
+					visited = new boolean[N][N];
+					findBridge(i, j, map[i][j]);
 				}
 			}
 		}
@@ -73,7 +73,7 @@ public class Main {
 		}
 	}
 	
-	private static void findBridge(int x, int y) {
+	private static void findBridge(int x, int y, int group) {
 		Queue<int[]> q = new LinkedList<>();
 		q.add(new int[] {x, y, 0});
 		visited[x][y] = true;
@@ -82,19 +82,21 @@ public class Main {
 			int[] cur = q.poll();
 			int bridge = cur[2];
 			
-			if(map[cur[0]][cur[1]] != map[x][y] && map[cur[0]][cur[1]] > 0) {
-				answer = Math.min(answer, bridge-1);
-				return;
-			}
+			if(bridge >= answer) continue; 
 			
 			for(int i = 0; i < 4; i++) {
 				int nx = cur[0] + d[i][0];
 				int ny = cur[1] + d[i][1];
 				
 				if(nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny]) continue;
-				if(map[nx][ny] != map[x][y]) {
+				if(map[nx][ny] == group) continue;
+				
+				if(map[nx][ny] == 0) {
 					visited[nx][ny] = true;
 					q.add(new int[] {nx, ny, bridge + 1});
+				}
+				else {
+					answer = Math.min(answer, bridge);
 				}
 				
 			}
