@@ -5,12 +5,16 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+/**
+ * 메모리: 137780 KB
+ * 시간: 264 ms
+ */
 public class Main {
 
 	static int N, answer;
 	static boolean[][] visited;
 	static int[][] map;
-	static int[][] d = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } }; // 0: 북, 1: 동, 2: 남, 3: 서
+	static int[][] d = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,7 +30,7 @@ public class Main {
 			}
 		}
 		
-		// 서로 다른 섬 세팅
+		// 섬 구분해주기
 		int num = 1;
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
@@ -36,11 +40,11 @@ public class Main {
 			}
 		}
 		
+		// 섬과 섬 사이의 최단거리 구하기
 		answer = Integer.MAX_VALUE;
-		
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				if(map[i][j] > 0) {
+				if(map[i][j] > 0 && isEdge(i, j)) { // 섬이면서 바다와 경계에 있는 경우만 탐색 시작
 					visited = new boolean[N][N];
 					findBridge(i, j, map[i][j]);
 				}
@@ -71,6 +75,20 @@ public class Main {
 				}
 			}
 		}
+	}
+	
+	// 바다와 인접한 섬인지 확인하는 함수
+	private static boolean isEdge(int x, int y) {
+		for(int i = 0; i < 4; i++) {
+			int nx = x + d[i][0];
+			int ny = y + d[i][1];
+			
+			// 범위 안에 있고, 바다(0)가 인접해있으면 true 반환
+			if(nx >= 0 && ny >= 0 && nx < N && ny < N && map[nx][ny] == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private static void findBridge(int x, int y, int group) {
