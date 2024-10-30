@@ -1,27 +1,24 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int sugar = sc.nextInt();
-		
-		int answer = 0;
-		
-		while(sugar >= 0) {
-			if(sugar % 5 == 0) {
-				answer += sugar / 5;
-				System.out.println(answer);
-				return;
-			}
-			
-			sugar = sugar - 3;
-			answer++;
-			
-		}
-		
-		System.out.println(-1);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
+        int count = 0;
 
-	}
+        while(N >= 0){
+            if(N % 5 == 0){
+                count += N / 5;
+                System.out.println(count);
+                return;
+            }
+            N -= 3;
+            count++;
+        }
+        System.out.println(-1);
 
+    }
 }
