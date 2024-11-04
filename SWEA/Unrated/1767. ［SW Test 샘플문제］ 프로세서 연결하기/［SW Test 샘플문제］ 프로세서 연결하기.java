@@ -54,35 +54,39 @@ public class Solution {
         int x = coreInfo.get(idx)[0];
         int y = coreInfo.get(idx)[1];
 
-        for(int[] d : dir) {
-            int nx = x; int ny = y;
+        for (int[] d : dir) {
+            int nx = x;
+            int ny = y;
             int count = 0;
-            while(true){
+            boolean isConnected = true;
+            List<int[]> path = new ArrayList<>();
+
+            while (true) {
                 nx += d[0];
                 ny += d[1];
-                count++;
 
-                if(nx < 0 || nx >= N || ny < 0 || ny >= N || map[nx][ny] != 0) break;
-
-                if(nx == 0 || ny == 0 || nx == N-1 || ny == N-1){
-                    nx = x; ny = y;
-                    for(int i = 0; i < count; i++){
-                        nx += d[0];
-                        ny += d[1];
-                        map[nx][ny] = 2;
-                    }
-                    connect(idx + 1, length + count, core + 1);
-
-                    map[nx][ny] = 0;
-                    for(int i = 0; i < count-1; i++){
-                        nx -= d[0];
-                        ny -= d[1];
-                        map[nx][ny] = 0;
-                    }
+                if (nx < 0 || nx >= N || ny < 0 || ny >= N) break;
+                if (map[nx][ny] != 0) {
+                    isConnected = false;
                     break;
+                }
+                path.add(new int[]{nx, ny});
+                count++;
+            }
+
+            if (isConnected) {
+                for (int[] p : path) {
+                    map[p[0]][p[1]] = 2; // 전선 설치
+                }
+
+                connect(idx + 1, length + count, core + 1);
+
+                for (int[] p : path) {
+                    map[p[0]][p[1]] = 0; // 전선 해제
                 }
             }
         }
+        
         connect(idx + 1, length, core);
     }
 }
