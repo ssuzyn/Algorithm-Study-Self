@@ -7,96 +7,82 @@ import java.util.StringTokenizer;
 
 public class Solution {
 
-    static int N, min;
+    static int N, minLength, maxCore;
     static int[][] map;
-    static boolean[] selected;
-    static List<int[]> core;
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
-
+    static List<int[]> coreInfo;
+    static int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int T = Integer.parseInt(br.readLine());
 
-        for(int t = 1; t <= T; t++){
-            N = Integer.parseInt(br.readLine());
+        for(int t = 1; t <= T; t++) {
+            N = Integer.parseInt(br.readLine()); // 배열의 크기
             map = new int[N][N];
-            core = new ArrayList<>(); // 코어 위치 저장하는 리스트
-            min = Integer.MAX_VALUE;
+            coreInfo = new ArrayList<>();
+            minLength = Integer.MAX_VALUE;
+            maxCore = 0;
 
-            for(int i = 0; i < N; i++){
+            for(int i = 0; i < N; i++) {
                 StringTokenizer st = new StringTokenizer(br.readLine());
-                for(int j = 0; j < N; j++){
+                for(int j = 0; j < N; j++) {
                     map[i][j] = Integer.parseInt(st.nextToken());
 
-                    // 가장자리가 아닌 코어만 리스트에 추가
-                    if(map[i][j] == 1 && i > 0 && i < N-1 && j > 0 && j < N-1) {
-                        core.add(new int[]{i, j});
+                    if(i > 0 && j > 0 && i < N-1 && j < N-1 && map[i][j] == 1) {
+                        coreInfo.add(new int[]{i, j});
                     }
                 }
             }
 
-            selected = new boolean[core.size()];
-            for(int i = core.size(); i >= 0; i--){
-                combination(0, 0, i);
-                if(min < Integer.MAX_VALUE) break;
+            connect(0, 0, 0);
+            System.out.println("#" + t + " " + minLength);
+        }
+    }
+
+    private static void connect(int idx, int length, int core){
+        if(idx == coreInfo.size()){
+            if(core > maxCore) {
+                maxCore = core;
+                minLength = length;
             }
-
-            System.out.println("#" + t + " " + min);
-        }
-    }
-
-    static void combination(int cnt, int start, int pick){
-        if(cnt == pick){
-            dfs(0, 0);
+            else if(core == maxCore){
+                minLength = Math.min(minLength, length);
+            }
             return;
         }
 
-        for(int i = start; i < core.size(); i++){
-            selected[i] = true;
-            combination(cnt + 1, i + 1, pick);
-            selected[i] = false;
-        }
-    }
+        int x = coreInfo.get(idx)[0];
+        int y = coreInfo.get(idx)[1];
 
-    static void dfs(int idx, int wire){
-        if(idx == core.size()) {
-            min = Math.min(min, wire); // 최소 전선 길이 합으로 갱신
-            return;
-        }
-
-        if(!selected[idx]) { // 부분 집합에 포함되지 않는 코어는 넘어감
-            dfs(idx + 1, wire);
-            return;
-        }
-
-        for(int i = 0; i < 4; i++){
-            int x = core.get(idx)[0];
-            int y = core.get(idx)[1];
-            int length = 0;
-            boolean success = false;
-
+        for(int[] d : dir) {
+            int nx = x; int ny = y;
+            int count = 0;
             while(true){
-                x += dx[i]; y += dy[i];
-                if(x < 0 || x >= N || y < 0 || y >= N) { // 범위 끝에 도착했으면 성공
-                    success = true;
+                nx += d[0];
+                ny += d[1];
+                count++;
+
+                if(nx < 0 || nx >= N || ny < 0 || ny >= N || map[nx][ny] != 0) break;
+
+                if(nx == 0 || ny == 0 || nx == N-1 || ny == N-1){
+                    nx = x; ny = y;
+                    for(int i = 0; i < count; i++){
+                        nx += d[0];
+                        ny += d[1];
+                        map[nx][ny] = 2;
+                    }
+                    connect(idx + 1, length + count, core + 1);
+
+                    map[nx][ny] = 0;
+                    for(int i = 0; i < count-1; i++){
+                        nx -= d[0];
+                        ny -= d[1];
+                        map[nx][ny] = 0;
+                    }
                     break;
                 }
-                if(map[x][y] != 0) break; // 전선이나 코어를 만나면 실패
-                map[x][y] = 2; // 전선
-                length++;
-            }
-
-            if(success) dfs(idx + 1, wire + length);
-
-            while(true){ // 원상복구
-                x -= dx[i]; y -= dy[i];
-                if(x == core.get(idx)[0] && y == core.get(idx)[1]) break;
-                map[x][y] = 0;
             }
         }
+        connect(idx + 1, length, core);
     }
-
-
 }
