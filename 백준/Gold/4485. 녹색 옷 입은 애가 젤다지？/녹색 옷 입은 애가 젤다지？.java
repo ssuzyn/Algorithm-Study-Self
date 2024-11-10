@@ -6,77 +6,81 @@ import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
-
+	
 	static int N;
 	static int[][] map;
-	static int[] dx = {-1,1,0,0};
-	static int[] dy = {0,0,-1,1};
+	static int[][] minDistance;
+	static int[][] dir = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
 	
+	static class Node{
+		int x, y, cost;
+		
+		Node(int x, int y, int cost){
+			this.x = x;
+			this.y = y;
+			this.cost = cost;
+		}
+	}
+
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		
+		StringBuilder sb = new StringBuilder();
 		int test = 1;
 		while(true) {
 			N = Integer.parseInt(br.readLine());
 			if(N == 0) break;
 			
 			map = new int[N][N];
-			
-			StringTokenizer st;
+			minDistance = new int[N][N];
 			for(int i = 0; i < N; i++) {
-				st = new StringTokenizer(br.readLine());
+				StringTokenizer st = new StringTokenizer(br.readLine());
 				for(int j = 0; j < N; j++) {
 					map[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
 			
+			for(int i = 0; i < N; i++) {
+				Arrays.fill(minDistance[i], Integer.MAX_VALUE);
+			}
 			
-			System.out.println("Problem " + (test++) + ": " + dijkstra(0, 0, N-1, N-1));
-			
+			dijkstra();
+			sb.append("Problem " + test + ": " + minDistance[N-1][N-1] + "\n");
+			test++;
 		}
 		
+		System.out.println(sb);
+
 	}
 	
-	
-	static int dijkstra(int sx, int sy, int ex, int ey) {
-		
+	private static void dijkstra() {
 		boolean[][] visited = new boolean[N][N];
-		int[][] minRupee = new int[N][N];
-		for(int i = 0; i < N; i++) {
-			Arrays.fill(minRupee[i], Integer.MAX_VALUE);
-		}
-		
-		minRupee[sx][sy] = map[sx][sy]; // 시작 정점 비용 초기화
-		
-		PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);
-		pq.offer(new int[] {sx, sy, minRupee[sx][sy]});
+		PriorityQueue<Node> pq = new PriorityQueue<>((n1, n2) -> {
+			return n1.cost - n2.cost;
+		});
+		pq.add(new Node(0, 0, map[0][0]));
+		minDistance[0][0] = map[0][0];
+		visited[0][0] = true;
 		
 		while(!pq.isEmpty()) {
-			int[] node = pq.poll();
-			int x = node[0];
-			int y = node[1];
-			int cost = node[2];
+			Node tmp = pq.poll();
 			
-			if(visited[x][y]) continue;
-			visited[x][y] = true;
+			if(minDistance[tmp.x][tmp.y] < tmp.cost) continue;
+			if(tmp.x == N-1 && tmp.y == N-1) break;
 			
-			if(x == ex && y == ey) return cost;
-			
-			for(int i = 0; i < 4; i++) {
-				int nx = x + dx[i];
-				int ny = y + dy[i];
+			for(int[] d : dir) {
+				int nx = tmp.x + d[0];
+				int ny = tmp.y + d[1];
 				
-				if(nx < 0 || nx >= N || ny < 0 || ny >= N || visited[nx][ny]) continue;
+				if(nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny]) continue;
 				
-				if(minRupee[nx][ny] > cost + map[nx][ny]) {
-					minRupee[nx][ny] = cost + map[nx][ny];
-					pq.offer(new int[] {nx, ny, minRupee[nx][ny]});
+				int cost = minDistance[tmp.x][tmp.y] + map[nx][ny];
+				if(minDistance[nx][ny] > cost) {
+					minDistance[nx][ny] = cost;
+					pq.add(new Node(nx, ny, cost));
+					visited[nx][ny] = true;
 				}
 			}
 		}
-		
-		
-		return -1;
 	}
 
 }
