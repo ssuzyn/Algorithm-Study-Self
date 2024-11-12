@@ -16,6 +16,8 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
+		StringBuilder sb = new StringBuilder();
+		
 		N = Integer.parseInt(st.nextToken()); // 문제의 수 
 		M = Integer.parseInt(st.nextToken()); // 문제 정보의 개수 
 		inDegree = new int[N + 1];
@@ -32,14 +34,7 @@ public class Main {
 			inDegree[b]++;
 		}
 		
-		answer = new ArrayList<>();
-		topology();
-		for(int n : answer) {
-			System.out.print(n + " ");
-		}
-	}
-	
-	private static void topology() {
+		// 위상 정렬 시작
 		PriorityQueue<Integer> q = new PriorityQueue<>();
 		
 		for(int i = 1; i <= N; i++) {
@@ -48,13 +43,14 @@ public class Main {
 		
 		while(!q.isEmpty()) {
 			int cur = q.poll();
-			answer.add(cur);
+			sb.append(cur + " ");
 			
 			for(int next : problem[cur]) {
 				inDegree[next]--;
 				if(inDegree[next] == 0) q.add(next);
 			}
 		}
+		System.out.println(sb);
 	}
 	
 }
