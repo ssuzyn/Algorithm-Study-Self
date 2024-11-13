@@ -39,45 +39,37 @@ public class Main {
 		}
 		
 		System.out.println(max);
-
 	}
 	
-	public static void combi(int x, int y, int depth, int start, int sum) { // ㅓ, ㅜ, ㅏ, ㅗ 테트로미노
-		if(depth == 3) {
+	private static void combi(int x, int y, int cnt, int start, int sum) {
+		if(cnt == 3) {
 			max = Math.max(max, sum);
 			return;
 		}
 		
-		
-		for(int i = start; i < dx.length; i++) {
+		for(int i = start; i < 4; i++) {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
-			
-			if(nx >= 0 && nx < N && ny >= 0 && ny < M) {
-				combi(x, y, depth + 1, i + 1, sum + paper[nx][ny]);
-			}
+			if(nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+			combi(x, y, cnt + 1, i + 1, sum + paper[nx][ny]);
 		}
 	}
 	
-	public static void dfs(int x, int y, int depth, int sum) {
+	private static void dfs(int x, int y, int depth, int sum) {
 		if(depth == 4) {
 			max = Math.max(max, sum);
 			return;
 		}
 		
-		for(int i = 0; i < dx.length; i++) {
+		for(int i = 0; i < 4; i++) {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
 			
-			if(nx >= 0 && nx < N && ny >= 0 && ny < M) {
-				if(visited[nx][ny]) continue;
-				
-				visited[nx][ny] = true;
-				dfs(nx, ny, depth + 1, sum + paper[nx][ny]);
-				visited[nx][ny] = false;
-				
-			}
+			if(nx < 0 || ny < 0 || nx >= N || ny >= M || visited[nx][ny]) continue;
+			visited[nx][ny] = true;
+			dfs(nx, ny, depth + 1, sum + paper[nx][ny]);
+			visited[nx][ny] = false;
 		}
 	}
-
+	
 }
