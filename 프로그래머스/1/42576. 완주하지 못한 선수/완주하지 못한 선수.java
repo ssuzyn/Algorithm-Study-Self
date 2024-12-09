@@ -2,30 +2,21 @@ import java.util.*;
 
 class Solution {
     public String solution(String[] participant, String[] completion) {
-        
-        HashMap<String, Integer> player = new HashMap<>();
-        
-        for(String name: participant){
-            if(player.containsKey(name)) {
-                player.put(name, player.get(name) + 1);
-            }
-            else{
-                player.put(name, 1);
-
-            }
-        }
-        
-        for(String name: completion){
-            if(player.containsKey(name)){
-                player.replace(name, player.get(name) - 1);
-            }
-        }
-        
         String answer = "";
-        for(String name : player.keySet()){
-            if(player.get(name) == 1) answer = name;
+        HashMap<String, Integer> players = new HashMap<>();
+
+        for(String name : participant){ // 참여한 선수 명단 -> 동명이인 고려를 위해 HashMap 사용
+            players.put(name, players.getOrDefault(name, 0) + 1);
         }
-        
+
+        for(String name: completion){
+            players.put(name, players.get(name) - 1);
+        }
+
+        for(String name: players.keySet()){
+            if(players.get(name) == 1) answer = name;
+        }
+
         return answer;
     }
 }
