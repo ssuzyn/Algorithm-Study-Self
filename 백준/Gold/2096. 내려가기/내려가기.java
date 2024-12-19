@@ -46,12 +46,8 @@ public class Main {
             }
         }
 
-        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-        for(int i = 0; i < M; i++){
-            min = Math.min(min, minD[N-1][i]);
-            max = Math.max(max, maxD[N-1][i]);
-        }
-        System.out.println(max + " " + min);
+        System.out.println(Math.max(Math.max(maxD[N-1][0], maxD[N-1][1]), maxD[N-1][2])
+            + " " + Math.min(Math.min(minD[N-1][0], minD[N-1][1]), minD[N-1][2]));
     }
 
 }
