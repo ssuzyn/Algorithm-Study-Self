@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Stack;
 
 public class Main {
 
@@ -9,32 +8,30 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         char[] line = br.readLine().toCharArray();
         char[] bomb = br.readLine().toCharArray();
-        Stack<Character> stack = new Stack<>();
+        StringBuilder stack = new StringBuilder();
 
-        for(int i = 0; i < line.length; i++){
-            stack.push(line[i]);
-            if(stack.size() < bomb.length) continue;
+        for (int i = 0; i < line.length; i++) {
+            stack.append(line[i]); // 스택처럼 사용
 
-            boolean canPop = true;
-            if(stack.peek() == bomb[bomb.length - 1]){
-                for(int j = 2; j <= bomb.length; j++){
-                    if(stack.get(stack.size() - j) != bomb[bomb.length - j]){
+            if (stack.length() >= bomb.length) { // 폭탄 문자열과 길이 비교
+                boolean canPop = true;
+                for (int j = 0; j < bomb.length; j++) {
+                    if (stack.charAt(stack.length() - bomb.length + j) != bomb[j]) {
                         canPop = false;
                         break;
                     }
                 }
-                if(canPop){
-                    for(int j = 0; j < bomb.length; j++) stack.pop();
+                if (canPop) {
+                    stack.delete(stack.length() - bomb.length, stack.length()); // 폭탄 문자열 삭제
                 }
             }
         }
 
-        if(stack.isEmpty()) System.out.println("FRULA");
-        else{
-            StringBuilder sb = new StringBuilder();
-            while(!stack.isEmpty()) sb.append(stack.pop());
-            System.out.println(sb.reverse());
+        // 최종 출력
+        if (stack.length() == 0) {
+            System.out.println("FRULA");
+        } else {
+            System.out.println(stack.toString());
         }
-
     }
 }
