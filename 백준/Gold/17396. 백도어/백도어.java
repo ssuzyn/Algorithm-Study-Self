@@ -13,13 +13,18 @@ public class Main {
     static int[] enemy;
     static ArrayList<Node>[] graph;
 
-    static class Node{
+    static class Node implements Comparable<Node>{
         int v;
         long cost;
 
         public Node(int v, long cost){
             this.v = v;
             this.cost = cost;
+        }
+
+        @Override
+        public int compareTo(Node o){
+            return Long.compare(this.cost, o.cost);
         }
     }
 
@@ -34,11 +39,9 @@ public class Main {
         minDistance = new long[V];
 
         st = new StringTokenizer(br.readLine());
-        for(int i = 0; i < V; i++){
-            enemy[i] = Integer.parseInt(st.nextToken());
-        }
 
         for(int i = 0; i < V; i++){
+            enemy[i] = Integer.parseInt(st.nextToken());
             graph[i] = new ArrayList<>();
         }
 
@@ -58,7 +61,7 @@ public class Main {
     }
 
     private static void dijkstra(){
-        PriorityQueue<Node> pq = new PriorityQueue<>((n1, n2) -> Long.compare(n1.cost, n2.cost));
+        PriorityQueue<Node> pq = new PriorityQueue<>();
         pq.add(new Node(0, 0));
         minDistance[0] = 0;
 
