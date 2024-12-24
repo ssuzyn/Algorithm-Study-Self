@@ -9,7 +9,6 @@ public class Main{
 
     static int N, M, H, tomato;
     static int[][][] box;
-    static boolean[][][] visited;
     static int[][] dir = {{-1, 0, 0}, {1, 0, 0}, {0, -1, 0}, {0, 1, 0}, {0, 0, -1}, {0, 0, 1}};
     static Queue<int[]> q = new LinkedList<>();
 
@@ -21,7 +20,6 @@ public class Main{
         H = Integer.parseInt(st.nextToken()); // 쌓아올려지는 상자의 수
 
         box = new int[N][M][H];
-        visited = new boolean[N][M][H];
         tomato = 0;
 
         for(int z = 1; z <= H; z++){
@@ -62,8 +60,7 @@ public class Main{
                 int nz = z + dir[i][2];
 
                 if(nx < 0 || nx >= N || ny < 0 || ny >= M || nz < 0 || nz >= H) continue;
-                if(!visited[nx][ny][nz] && box[nx][ny][nz] == 0){
-                    visited[nx][ny][nz] = true;
+                if(box[nx][ny][nz] == 0){
                     box[nx][ny][nz] = 1;
                     tomato--;
                     nextQ.add(new int[]{nx, ny, nz});
