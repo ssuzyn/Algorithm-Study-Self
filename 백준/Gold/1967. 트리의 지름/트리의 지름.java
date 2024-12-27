@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N, max;
+    static int N, max, farNode;
     static boolean[] visited;
     static ArrayList<Node>[] tree;
 
@@ -22,9 +22,9 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        tree = new ArrayList[N + 1];
 
-        for(int i = 1; i <= N; i++){
+        tree = new ArrayList[N + 1];
+        for(int i = 0; i <= N; i++){
             tree[i] = new ArrayList<>();
         }
 
@@ -37,24 +37,32 @@ public class Main {
             tree[child].add(new Node(parent, weight));
         }
 
-        max = Integer.MIN_VALUE;
-        for(int i = 1; i <= N; i++){
-            visited = new boolean[N + 1];
-            visited[i] = true;
-            dfs(i, 0);
-        }
+        // 1번 노드에서 가장 먼 노드를 찾기 위한 DFS
+        max = 0;
+        visited = new boolean[N + 1];
+        dfs(1, 0); // 임의의 시작점에서 가장 먼 노드 찾기
+
+        // 가장 먼 노드에서 다시 DFS로 트리의 지름을 구함
+        max = 0;
+        visited = new boolean[N + 1];
+        dfs(farNode, 0); // 가장 먼 노드로부터 가장 먼 거리의 노드 찾기
 
         System.out.println(max);
     }
 
-    private static void dfs(int idx, int depth){
+    private static void dfs(int idx, int distance){
+        visited[idx] = true;
+
+        if(distance > max){
+            max = distance;
+            farNode = idx;
+        }
+
         for(Node node : tree[idx]){
             if(!visited[node.idx]){
-                visited[node.idx] = true;
-                dfs(node.idx, depth + node.weight);
+                dfs(node.idx, distance + node.weight);
             }
         }
-        max = Math.max(depth, max);
     }
 
 }
