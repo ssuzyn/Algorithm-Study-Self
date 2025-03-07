@@ -22,28 +22,25 @@ public class Main{
                 home[i] = Integer.parseInt(st.nextToken());
             }
 
-            int start = 0;
-            int end = M - 1;
             int sum = 0;
-            for(int i = 0; i <= end; i++){
+            for(int i = 0; i < M; i++){
                 sum += home[i];
             }
 
-            if(N == M && sum < K) {
-                sb.append(1).append("\n");
-                continue;
-            }
-
             int count = 0;
-            
-            do {
-                if (sum < K) count++;
+            if(N == M) {
+                if(sum < K) count = 1;
+            } else {
+                int start = 0;
+                do {
+                    if (sum < K) count++;
 
-                sum -= home[start];
-                start = (start + 1) % N;
-                end = (end + 1) % N;
-                sum += home[end];
-            } while (start != 0);
+                    sum -= home[start];
+                    start = (start + 1) % N;
+                    int end = (start + M - 1) % N;
+                    sum += home[end];
+                } while (start != 0);
+            }
 
             sb.append(count).append("\n");
 
