@@ -34,6 +34,13 @@ public class Main {
 			}
 		}
 
+		// 지훈이가 초기 위치에서 가장자리에 있는 경우 바로 탈출 가능
+		int[] start = jihun.peek();
+		if(start[0] == 0 || start[1] == 0 || start[0] == R-1 || start[1] == C-1) {
+			System.out.println(1);
+			return;
+		}
+
 		int time = 0;
 		while(!jihun.isEmpty()){
 			time++;
