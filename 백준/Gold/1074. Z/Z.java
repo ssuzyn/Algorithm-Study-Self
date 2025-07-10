@@ -3,42 +3,45 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class Main {
-    static int N, r, c;
-    static int ans = 0;
+public class Main{
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        r = Integer.parseInt(st.nextToken());
-        c = Integer.parseInt(st.nextToken());
+	static int N, r, c;
+	static int answer = 0;
 
-        solve(0, 0, (1 << N));
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		r = Integer.parseInt(st.nextToken());
+		c = Integer.parseInt(st.nextToken());
 
-    private static void solve(int x, int y, int size) {
-        if (size == 1) {
-            System.out.println(ans);
-            return;
-        }
+		solution(0, 0, (1 << N));
 
-        int newSize = size / 2;
+	}
 
-        if (r < x + newSize && c < y + newSize) {
-            solve(x, y, newSize);
-        }
-        else if (r < x + newSize && c >= y + newSize) {
-            ans += (newSize * newSize);
-            solve(x, y + newSize, newSize);
-        }
-        else if (r >= x + newSize && c < y + newSize) {
-            ans += (newSize * newSize * 2);
-            solve(x + newSize, y, newSize);
-        }
-        else {
-            ans += (newSize * newSize * 3);
-            solve(x + newSize, y + newSize, newSize);
-        }
-    }
+	private static void solution(int x, int y, int size){
+		if(size == 1){
+			System.out.println(answer);
+			return;
+		}
+
+		int newSize = size / 2;
+
+		if(r < x + newSize && c < y + newSize){ // 1사분면
+			solution(x, y, newSize);
+		}
+		else if(r < x + newSize && c >= y + newSize){ // 2사분면
+			answer += newSize * newSize;
+			solution(x, y + newSize, newSize);
+		}
+		else if(r >= x + newSize && c < y + newSize){ // 3사분면
+			answer += newSize * newSize * 2;
+			solution(x + newSize, y, newSize);
+		}
+		else{ // 4사분면
+			answer += newSize * newSize * 3;
+			solution(x + newSize, y + newSize, newSize);
+		}
+	}
+
 }
