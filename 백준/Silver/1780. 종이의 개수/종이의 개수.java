@@ -38,15 +38,11 @@ public class Main{
 		}
 
 		int newSize = size/3;
-		divide(start, end, newSize);
-		divide(start, end + newSize, newSize);
-		divide(start, end + newSize * 2, newSize);
-		divide(start + newSize, end, newSize);
-		divide(start + newSize * 2, end, newSize);
-		divide(start + newSize, end + newSize, newSize);
-		divide(start + newSize * 2, end + newSize, newSize);
-		divide(start + newSize, end + newSize * 2, newSize);
-		divide(start + newSize * 2, end + newSize * 2, newSize);
+		for(int i = 0; i < 3; i++){
+			for(int j = 0; j < 3; j++){
+				divide(start + i * newSize, end + j * newSize, newSize);
+			}
+		}
 	}
 
 	private static boolean checkPaper(int start, int end, int size){
