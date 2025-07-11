@@ -6,57 +6,58 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	static int N;
-	static int[] snow;
-	static int diff = Integer.MAX_VALUE;
-	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine()); // 배열 A의 크기
+		int N = Integer.parseInt(br.readLine());
+		int[] snow = new int[N];
+
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		
-		snow = new int[N];
-		for(int i = 0; i < N; i++) {
+		for (int i = 0; i < N; i++) {
 			snow[i] = Integer.parseInt(st.nextToken());
 		}
-		
 		Arrays.sort(snow);
-		
-		for(int i = 0; i < N; i++) {
-			for(int j = i + 1; j < N; j++) {
-				
-				int snowMan1 = snow[i] + snow[j]; // 엘사가 먼저 눈사람 고르기
-				int start = 0, end = N-1;
-				
-				while(start < end) {
-					if(start == i || start == j) {
-						start++;
+
+		int minDiff = Integer.MAX_VALUE;
+
+		// 첫 번째 눈사람을 만드는 모든 경우
+		for (int i = 0; i < N; i++) {
+			for (int j = i + 1; j < N; j++) {
+				int snowElsa = snow[i] + snow[j];
+
+				// 남은 눈덩이들로 두 번째 눈사람 만들기 (투 포인터)
+				int left = 0;
+				int right = N - 1;
+
+				while (left < right) {
+					// 이미 사용된 인덱스 건너뛰기
+					if (left == i || left == j) {
+						left++;
 						continue;
 					}
-					
-					if(end == i || end == j) {
-						end--;
+					if (right == i || right == j) {
+						right--;
 						continue;
 					}
-					
-					int snowMan2 = snow[start] + snow[end];
-					diff = Math.min(Math.abs(snowMan1 - snowMan2), diff);
-					
-					if(snowMan1 > snowMan2) {
-						start++;
-					}
-					else if(snowMan1 < snowMan2){
-						end--;
-					}
-					else {
+
+					int snowAnna = snow[left] + snow[right];
+					minDiff = Math.min(minDiff, Math.abs(snowElsa - snowAnna));
+
+					// 최적해 발견시 조기 종료
+					if (minDiff == 0) {
 						System.out.println(0);
 						return;
+					}
+
+					// 투 포인터 이동
+					if (snowAnna < snowElsa) {
+						left++;
+					} else {
+						right--;
 					}
 				}
 			}
 		}
-		
-		System.out.println(diff);
-	}
 
+		System.out.println(minDiff);
+	}
 }
