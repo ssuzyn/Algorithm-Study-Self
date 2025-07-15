@@ -5,51 +5,53 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-
+		
 		int N = Integer.parseInt(st.nextToken()); // 접시의 수
 		int d = Integer.parseInt(st.nextToken()); // 초밥의 가짓수
-		int k = Integer.parseInt(st.nextToken()); // 연속 접시 수
+		int k = Integer.parseInt(st.nextToken()); // 연속해서 먹는 접시의 수
 		int c = Integer.parseInt(st.nextToken()); // 쿠폰 번호
-
-		int[] sushiBelt = new int[N];
-		int[] sushiType = new int[d + 1];
-
-		for(int i = 0; i < N; i++){
-			sushiBelt[i] = Integer.parseInt(br.readLine());
+		
+		int[] count = new int[d + 1];
+		int[] sushi = new int[N];
+		
+		for(int i = 0; i < N; i++) {
+			sushi[i] = Integer.parseInt(br.readLine());
 		}
-
-		// 초기 윈도우 설정
-		int count = 0;
-		for(int i = 0; i < k; i++){
-			int sushiNum = sushiBelt[i];
-			if(sushiType[sushiNum] == 0) count++;
-			sushiType[sushiNum]++;
+		
+		int type = 0;
+		for(int i = 0; i < k; i++) {
+			if(count[sushi[i]] == 0) {
+				type++; // 처음 카운팅하는 종류일 경우에만
+			}
+			count[sushi[i]]++; 
 		}
-
-		// 쿠폰 초밥 추가 (아직 없다면)
-		if(sushiType[c] == 0) count++;
-		sushiType[c]++;
-
-		int maxCnt = count;
-
-		// 슬라이딩 윈도우로 회전
-		for(int i = 0; i < N; i++){
-			// 왼쪽 끝 제거
-			int leftSushi = sushiBelt[i];
-			sushiType[leftSushi]--;
-			if(sushiType[leftSushi] == 0) count--;
-
-			// 오른쪽 끝 추가
-			int rightSushi = sushiBelt[(i + k) % N];
-			if(sushiType[rightSushi] == 0) count++;
-			sushiType[rightSushi]++;
-
-			maxCnt = Math.max(count, maxCnt);
+		
+		int ans = type;
+		for(int start = 0; start < N; start++) {
+			int end = (start + k) % N;
+			
+			// 왼쪽 초밥 제거
+			if(count[sushi[start]] == 1) type--;
+			
+			count[sushi[start]]--;
+			
+			// 오른쪽 초밥 추가
+			if(count[sushi[end]] == 0) type++;
+			
+			count[sushi[end]]++;
+			
+			// 쿠폰 초밥 포함한 최대 종류 수 갱신
+			int maxType = type;
+			if(count[c] == 0) maxType++;
+			
+			ans = Math.max(ans, maxType);
+			
 		}
-
-		System.out.println(maxCnt);
+		
+		System.out.println(ans);
 	}
+
 }
