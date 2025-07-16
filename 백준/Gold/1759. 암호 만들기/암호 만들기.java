@@ -35,17 +35,17 @@ public class Main {
 			return;
 		}
 
-		if(idx == C) return;
+		for(int i = idx; i < C; i++){
+			password[cnt] = alpha[i];
 
-		password[cnt] = alpha[idx];
+			int nextVowel = vowel;
+			int nextConsonant = consonant;
 
-		int nextVowel = vowel;
-		int nextConsonant = consonant;
-		if(vowels.contains(alpha[idx])) nextVowel++;
-		else nextConsonant++;
+			if(vowels.contains(alpha[i])) nextVowel++;
+			else nextConsonant++;
 
-		dfs(cnt + 1, idx + 1, nextVowel, nextConsonant);
-		dfs(cnt, idx + 1, vowel, consonant);
+			dfs(cnt + 1, i + 1, nextVowel, nextConsonant);
+		}
 	}
 
 }
