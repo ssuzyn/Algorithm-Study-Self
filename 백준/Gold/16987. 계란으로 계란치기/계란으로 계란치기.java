@@ -5,45 +5,72 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N, answer = 0;
-    static int[][] egg;
+	static int N, answer;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine()); // 계란 개수
-        egg = new int[N][2];
+	static class Egg{
+		int power;
+		int weight;
 
-        StringTokenizer st;
-        for(int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            egg[i][0] = Integer.parseInt(st.nextToken()); // 내구도
-            egg[i][1] = Integer.parseInt(st.nextToken()); // 무게
-        }
-        solve(0, 0);
-        System.out.println(answer);
-    }
+		Egg(int power, int weight){
+			this.power = power;
+			this.weight = weight;
+		}
+	}
 
-    private static void solve(int turn, int cnt) {
-        if(cnt == N-1 || turn == N){
-            answer = Math.max(cnt, answer);
-            return;
-        }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		Egg[] eggs = new Egg[N];
 
-        if(egg[turn][0] <= 0) { // 현재 들고 있는 계란이 깨진 경우
-            solve(turn + 1, cnt);
-        }
-        else{
-            for(int i = 0; i < N; i++){
-                if (i == turn || egg[i][0] <= 0) continue; // 자신이나 깨진 계란 제외
+		for(int i = 0; i < N; i++){
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			eggs[i] = new Egg(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
 
-                egg[turn][0] -= egg[i][1];
-                egg[i][0] -= egg[turn][1];
+		answer = Integer.MIN_VALUE;
+		breakEgg(0, eggs, 0);
+		System.out.println(answer);
 
-                solve(turn + 1, cnt + (egg[turn][0] <= 0? 1 : 0) + (egg[i][0] <= 0? 1 : 0));
+	}
 
-                egg[turn][0] += egg[i][1];
-                egg[i][0] += egg[turn][1];
-            }
-        }
-    }
+	static boolean isEggBroken(Egg egg){
+		return egg.power <= 0;
+	}
+
+	static void breakEgg(int idx, Egg[] eggs, int broken){
+		if(idx == N){
+			answer = Math.max(answer, broken);
+			return;
+		}
+
+		// 손에 든 계란이 깨진 경우
+		if(isEggBroken(eggs[idx])){
+			breakEgg(idx + 1, eggs, broken);
+			return;
+		}
+
+		boolean status = true;
+		for(int target = 0; target < N; target++){
+			if(target == idx) continue;
+			if(eggs[target].power > 0){
+				status = false;
+				eggs[target].power -= eggs[idx].weight;
+				eggs[idx].power -= eggs[target].weight;
+
+				int tmpBroken = broken;
+				if(isEggBroken(eggs[target])) tmpBroken++;
+				if(isEggBroken(eggs[idx])) tmpBroken++;
+				breakEgg(idx + 1, eggs, tmpBroken);
+
+				// 계란 내구도 원상복구
+				eggs[target].power += eggs[idx].weight;
+				eggs[idx].power += eggs[target].weight;
+			}
+
+		}
+
+		// 깨지지 않은 다른 계란이 없는 경우
+		if(status) breakEgg(idx + 1, eggs, broken);
+
+	}
 }
