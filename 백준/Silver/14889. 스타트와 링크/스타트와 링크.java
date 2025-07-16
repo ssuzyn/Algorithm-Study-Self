@@ -44,6 +44,11 @@ public class Main {
 		}
 
 		answer = Math.min(answer, Math.abs(sumA - sumB));
+
+		if(answer == 0){
+			System.out.println(answer);
+			System.exit(0);
+		}
 	}
 
 	static void combi(int cnt, int start){
