@@ -9,8 +9,6 @@ public class Main{
 
 	static int N, M;
 	static int[] map = new int[101];
-	static int[] ladder = new int[101];
-	static int[] snake = new int[101];
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,14 +16,9 @@ public class Main{
 		N = Integer.parseInt(st.nextToken()); // 사다리의 수
 		M = Integer.parseInt(st.nextToken()); // 뱀의 수
 
-		for(int i = 0; i < N; i++){
+		for(int i = 0; i < N + M; i++){
 			st = new StringTokenizer(br.readLine());
-			ladder[Integer.parseInt(st.nextToken())] = Integer.parseInt(st.nextToken());
-		}
-
-		for(int i = 0; i < M; i++){
-			st = new StringTokenizer(br.readLine());
-			snake[Integer.parseInt(st.nextToken())] = Integer.parseInt(st.nextToken());
+			map[Integer.parseInt(st.nextToken())] = Integer.parseInt(st.nextToken());
 		}
 
 		bfs();
@@ -40,8 +33,8 @@ public class Main{
 
 		while(!q.isEmpty()){
 			int[] cur = q.poll();
-			int idx = cur[0];
-			int cnt = cur[1];
+			int idx = cur[0]; // 현재 위치
+			int cnt = cur[1]; // 주사위 던진 횟수
 
 			if(idx == 100){
 				System.out.println(cnt);
@@ -53,19 +46,15 @@ public class Main{
 				if(next > 100 || visited[next]) continue;
 
 				visited[next] = true;
-
-				if(ladder[next] > 0) { // 사다리가 있는 경우
-					visited[ladder[next]] = true;
-					q.add(new int[]{ladder[next], cnt + 1});
+				
+				if(map[next] != 0){ // 사다리나 뱀이 있는 경우
+					next = map[next];
+					visited[next] = true;
 				}
-				else if(snake[next] > 0) { // 뱀이 있는 경우
-					visited[snake[next]] = true;
-					q.add(new int[]{snake[next], cnt + 1});
-				}
-				else q.add(new int[]{next, cnt + 1});
 
+				q.add(new int[]{next, cnt + 1});
 			}
 		}
 	}
-	
+
 }
