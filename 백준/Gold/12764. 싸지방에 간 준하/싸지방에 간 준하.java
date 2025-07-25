@@ -32,9 +32,7 @@ public class Main{
 
 		PriorityQueue<Integer> availableSeat = new PriorityQueue<>();
 
-		PriorityQueue<Computer> computer = new PriorityQueue<>((c1, c2) -> {
-			return c1.end - c2.end;
-		});
+		PriorityQueue<Computer> computer = new PriorityQueue<>((c1, c2) -> c1.end - c2.end);
 
 		PriorityQueue<Person> people = new PriorityQueue<>((p1, p2) -> {
 			if(p1.start != p2.start) return p1.start - p2.start;
@@ -46,7 +44,7 @@ public class Main{
 			people.add(new Person(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
 		}
 
-		int seatNumber = 1;
+		int seatNo = 1;
 		int[] seat = new int[N+1];
 
 		while(!people.isEmpty()){
@@ -56,22 +54,18 @@ public class Main{
 					availableSeat.add(computer.poll().index);
 			}
 
-			if(availableSeat.isEmpty()){
-				seat[seatNumber]++;
-				computer.add(new Computer(seatNumber, cur.end));
-				seatNumber++;
-			}
-			else{
-				int number = availableSeat.poll();
-				seat[number]++;
-				computer.add(new Computer(number, cur.end));
-			}
+			int number = availableSeat.isEmpty()? seatNo++ : availableSeat.poll();
+			computer.add(new Computer(number, cur.end));
+			seat[number]++;
 		}
 
-		System.out.println(seatNumber - 1);
-		for(int i = 1; i < seatNumber; i++){
-			System.out.print(seat[i] + " ");
+		StringBuilder sb = new StringBuilder();
+		sb.append(seatNo - 1 + "\n");
+		for(int i = 1; i < seatNo; i++){
+			sb.append(seat[i] + " ");
 		}
+
+		System.out.println(sb);
 
 	}
 
