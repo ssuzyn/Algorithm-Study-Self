@@ -1,35 +1,31 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
 
 public class Main {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		int n = Integer.parseInt(br.readLine());
-		String s = br.readLine();
+        int N = Integer.parseInt(br.readLine());
+        String S = br.readLine();
 
-		Map<String, Integer> map = new HashMap<>();
-		map.put("0000", 1);
+        int[][][][] dp = new int[3][3][3][3];
+        dp[0][0][0][0] = 1; // 빈 구간 초기화
 
-		int t=0, g=0, p=0, f=0;
-		long ans = 0;
+        int t = 0, g = 0, f = 0, p = 0, ans = 0;
 
-		for(int i = 0; i < n; i++) {
-			char c = s.charAt(i);
-			if(c == 'T') t++;
-			else if(c == 'G') g++;
-			else if(c == 'P') p++;
-			else if(c == 'F') f++;
+        for (int i = 0; i < N; i++) {
+            // 현재 문자 카운트 증가
+            if (S.charAt(i) == 'T') t++;
+            else if (S.charAt(i) == 'G') g++;
+            else if (S.charAt(i) == 'F') f++;
+            else if (S.charAt(i) == 'P') p++;
 
-			String state = (t%3) + "" + (g%3) + "" + (p%3) + "" + (f%3);
+            // 같은 상태 이전 등장 횟수만큼 답에 추가
+            ans += dp[t % 3][g % 3][f % 3][p % 3];
 
-			ans += map.getOrDefault(state, 0);
-			map.put(state, map.getOrDefault(state, 0) + 1);
-		}
+            // 현재 상태 카운트 증가
+            dp[t % 3][g % 3][f % 3][p % 3]++;
+        }
 
-		System.out.println(ans);
-	}
+        System.out.println(ans);
+    }
 }
