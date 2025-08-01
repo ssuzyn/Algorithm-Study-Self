@@ -1,25 +1,40 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class Main {
+
+	static int N;
+	static int[][][] dp;
 	static final int MOD = 1_000_000;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
+		N = Integer.parseInt(br.readLine());
 
-		int[][][] dp = new int[N + 1][2][3]; // [날짜][지각 횟수][연속 결석 횟수]
-		dp[1][0][0] = dp[1][1][0] = dp[1][0][1] = 1;
+		dp = new int[N + 1][2][3]; // [날짜][지각 횟수][연속 결석 횟수]
 
-		for(int day = 2; day <= N; day++){
-			dp[day][0][0] = (dp[day-1][0][0] + dp[day-1][0][1] + dp[day-1][0][2]) % MOD;
-			dp[day][0][1] = dp[day-1][0][0] % MOD;
-			dp[day][0][2] = dp[day-1][0][1] % MOD;
-			dp[day][1][0] = (dp[day-1][0][0] + dp[day-1][0][1] + dp[day-1][0][2] + dp[day-1][1][0] + dp[day-1][1][1] + dp[day-1][1][2]) % MOD;
-			dp[day][1][1] = dp[day-1][1][0] % MOD;
-			dp[day][1][2] = dp[day-1][1][1] % MOD;
+		for(int i = 0; i <= N; i++){
+			for(int j = 0; j < 2; j++){
+				Arrays.fill(dp[i][j], -1);
+			}
 		}
 
-		int answer = (dp[N][0][0] + dp[N][0][1] + dp[N][0][2] + dp[N][1][0] + dp[N][1][1] + dp[N][1][2]) % MOD;
-		System.out.println(answer);
+		System.out.println(solve(0 ,0, 0));
+	}
+
+	private static int solve(int day, int late, int absent){
+		if(late == 2 || absent == 3) return 0;
+		if(day == N) return 1;
+
+		if(dp[day][late][absent] != -1) return dp[day][late][absent];
+
+		dp[day][late][absent] = 0;
+		dp[day][late][absent] = solve(day + 1, late, 0)
+								+ solve(day + 1, late + 1, 0)
+								+ solve(day + 1, late, absent + 1);
+
+		return dp[day][late][absent] % MOD;
 	}
 }
