@@ -7,60 +7,58 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	static int N, M, count = 0, time = 0;
-	static int[][] map;
-	static Queue<int[]> tomato = new LinkedList<>();
+	static int N, M, time = 0, notTomato = 0;
+	static int[][] box;
+	static int[] dx = {-1, 1, 0, 0};
+	static int[] dy = {0, 0, -1, 1};
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken()); // 세로
-		M = Integer.parseInt(st.nextToken()); // 가로
-		
-		map = new int[M][N];
+		M = Integer.parseInt(st.nextToken()); // 열
+		N = Integer.parseInt(st.nextToken()); // 행
+		box = new int[N][M];
 
-		for (int i = 0; i < M; i++) {
+		Queue<int[]> tomato = new LinkedList<>();
+
+		for(int i = 0; i < N; i++){
 			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < N; j++) {
-				map[i][j] = Integer.parseInt(st.nextToken());
-				
-				if (map[i][j] == 1) tomato.add(new int[] { i, j });
-				else if (map[i][j] == 0) count++;
+			for(int j = 0; j < M; j++){
+				box[i][j] = Integer.parseInt(st.nextToken());
+				if(box[i][j] == 1) tomato.add(new int[]{i, j, 0});
+
+				if(box[i][j] == 0) notTomato++;
 			}
 		}
 
-		makeTomato();
-		System.out.println(count == 0 ? time-1 : -1);
+		bfs(tomato);
+		System.out.println(notTomato == 0? time : -1);
 	}
-	
 
-	private static void makeTomato() {
-		int[][] dir = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+	private static void bfs(Queue<int[]> tomato){
+		Queue<int[]> nextTomato = new LinkedList<>();
 
-		while (!tomato.isEmpty()) {
-			
-			int size = tomato.size();
+		while(!tomato.isEmpty()){
+			int[] cur = tomato.poll();
+			int x = cur[0];
+			int y = cur[1];
 
-			for (int i = 0; i < size; i++) {
+			for(int i = 0; i < 4; i++){
+				int nx = x + dx[i];
+				int ny = y + dy[i];
 
-				int[] cur = tomato.poll();
-				int x = cur[0];
-				int y = cur[1];
-
-				for (int[] d : dir) {
-					int nx = x + d[0];
-					int ny = y + d[1];
-
-					if (nx >= 0 && ny >= 0 && nx < M && ny < N && map[nx][ny] == 0){
-						tomato.add(new int[] { nx, ny });
-						map[nx][ny] = 1;
-						count--;
-					}
+				if(nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+				if(box[nx][ny] == 0){
+					notTomato--;
+					box[nx][ny] = 1;
+					nextTomato.add(new int[]{nx, ny});
 				}
 			}
-			time++;
 		}
 
+		if(!nextTomato.isEmpty()) {
+			time++;
+			bfs(nextTomato);
+		}
 	}
-
 }
