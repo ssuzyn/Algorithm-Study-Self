@@ -26,6 +26,7 @@ public class Main {
 		int answer = 0;
 		for(int i = 0; i < N; i++) {
 			for(int j = 0; j < N; j++) {
+				if(dp[i][j] != 0) continue;
 				answer = Math.max(answer, dfs(i, j));
 			}
 		}
@@ -33,9 +34,7 @@ public class Main {
 	}
 
 	private static int dfs(int x, int y){
-		if(dp[x][y] != 0) return dp[x][y];
-
-		dp[x][y] = 1;
+		if(dp[x][y] == 0) dp[x][y] = 1;
 
 		for(int[] d : dir){
 			int nx = x + d[0];
@@ -44,7 +43,8 @@ public class Main {
 			if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
 			if(forest[x][y] >= forest[nx][ny]) continue;
 
-			dp[x][y] = Math.max(dp[x][y], dfs(nx, ny) + 1);
+			if(dp[nx][ny] == 0) dp[x][y] = Math.max(dp[x][y], dfs(nx, ny) + 1);
+			else dp[x][y] = Math.max(dp[x][y], dp[nx][ny] + 1);
 		}
 
 		return dp[x][y];
