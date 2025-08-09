@@ -3,19 +3,19 @@ import java.util.*;
 class Solution {
     public int solution(int[] people, int limit) {
         Arrays.sort(people);
-        int i = 0, j = people.length - 1;
-        int count = 0;
-
-        while (i <= j) {
-            if (people[i] + people[j] <= limit) {
-                // 두 사람을 함께 보내고, 양쪽 인덱스를 조정
-                i++;
+        
+        int answer = 0;
+        int left = 0;
+        int right = people.length - 1;
+        
+        while(left <= right){
+            if(people[left] + people[right] <= limit){
+                left++;
             }
-            // 가장 무거운 사람을 보냄
-            j--;
-            count++;
+            right--;
+            answer++;
         }
-
-        return count;
+        
+        return answer;
     }
 }
