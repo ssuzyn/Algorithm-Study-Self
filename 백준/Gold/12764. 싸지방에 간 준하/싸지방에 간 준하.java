@@ -1,72 +1,58 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class Main{
-
-	static int N;
-
-	static class Person{
-		int start, end;
-
-		Person(int start, int end){
-			this.start = start;
-			this.end = end;
-		}
-	}
+public class Main {
 
 	static class Computer{
-		int index, end;
+		int idx;
+		int end;
 
-		Computer(int index, int end){
-			this.index = index;
+		Computer(int idx, int end){
+			this.idx = idx;
 			this.end = end;
 		}
 	}
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		N = Integer.parseInt(br.readLine());
-
-		PriorityQueue<Integer> availableSeat = new PriorityQueue<>();
-
-		PriorityQueue<Computer> computer = new PriorityQueue<>((c1, c2) -> c1.end - c2.end);
-
-		PriorityQueue<Person> people = new PriorityQueue<>((p1, p2) -> {
-			if(p1.start != p2.start) return p1.start - p2.start;
-			return p1.end - p2.end;
-		});
+		int N = Integer.parseInt(br.readLine());
+		int[][] people = new int[N][2];
 
 		for(int i = 0; i < N; i++){
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			people.add(new Person(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+			people[i][0] = Integer.parseInt(st.nextToken());
+			people[i][1] = Integer.parseInt(st.nextToken());
 		}
 
-		int seatNo = 1;
-		int[] seat = new int[N+1];
+		// 컴퓨터 사용 시작 시간으로 정렬
+		Arrays.sort(people, (p1, p2) -> p1[0] - p2[0]);
 
-		while(!people.isEmpty()){
-			Person cur = people.poll();
+		int seatNum = 0;
+		int[] seat = new int[N];
+		PriorityQueue<Computer> computers = new PriorityQueue<>((c1, c2) -> c1.end - c2.end);
+		PriorityQueue<Integer> availableSeat = new PriorityQueue<>();
 
-			while(!computer.isEmpty() && computer.peek().end < cur.start){
-					availableSeat.add(computer.poll().index);
+		for(int[] p : people){
+			while(!computers.isEmpty() && computers.peek().end < p[0]){
+				availableSeat.add(computers.poll().idx); // 앉을 수 있는 자리 번호
 			}
 
-			int number = availableSeat.isEmpty()? seatNo++ : availableSeat.poll();
-			computer.add(new Computer(number, cur.end));
-			seat[number]++;
+			int num = availableSeat.isEmpty()? seatNum++ : availableSeat.poll();
+			computers.add(new Computer(num, p[1]));
+			seat[num]++;
 		}
 
 		StringBuilder sb = new StringBuilder();
-		sb.append(seatNo - 1 + "\n");
-		for(int i = 1; i < seatNo; i++){
+		sb.append(seatNum + "\n");
+		for(int i = 0; i < seatNum; i++){
 			sb.append(seat[i] + " ");
 		}
 
 		System.out.println(sb);
-
 	}
 
 }
