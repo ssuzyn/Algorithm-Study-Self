@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -13,22 +12,20 @@ public class Main {
 
 		while(T-- > 0){
 			int N = Integer.parseInt(br.readLine());
-			int[][] newbie = new int[N][2];
+			int[] newbie = new int[N];
 
 			for(int i = 0; i < N; i++){
 				StringTokenizer st = new StringTokenizer(br.readLine());
-				newbie[i][0] = Integer.parseInt(st.nextToken());
-				newbie[i][1] = Integer.parseInt(st.nextToken());
+				int a = Integer.parseInt(st.nextToken());
+				int b = Integer.parseInt(st.nextToken());
+				newbie[a-1] = b;
 			}
 
-			// 1차 성적 기준으로 정렬
-			Arrays.sort(newbie, (n1, n2) -> n1[0] - n2[0]);
-
 			int answer = 1;
-			int max = newbie[0][1]; // 1차 성적 기준 1등 신입사원의 2차 성적
+			int max = newbie[0]; // 1차 성적 기준 1등 신입사원의 2차 성적
 			for(int i = 1; i < N; i++){
-				if(max > newbie[i][1]){
-					max = newbie[i][1];
+				if(max > newbie[i]){
+					max = newbie[i];
 					answer++;
 				}
 			}
