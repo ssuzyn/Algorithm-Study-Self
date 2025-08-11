@@ -57,17 +57,15 @@ public class Main {
 
 		int answer = 0;
 		int count = 0;
-		int maxCost = 0;
 		while(!pq.isEmpty()){
 			Edge com = pq.poll();
 			if(union(com.a, com.b)){
-				answer += com.cost;
-				maxCost = Math.max(maxCost, com.cost);
 				if(++count == N-1) break;
+				answer += com.cost;
 			}
 		}
 
-		System.out.println(answer - maxCost);
+		System.out.println(answer);
 	}
 
 }
