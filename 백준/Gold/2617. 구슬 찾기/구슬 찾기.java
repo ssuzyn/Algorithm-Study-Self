@@ -7,54 +7,49 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-	static int N, M;
-
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken()); // 구슬의 개수
-		M = Integer.parseInt(st.nextToken()); // 구슬 쌍
+		int N = Integer.parseInt(st.nextToken()); // 구슬의 개수
+		int M = Integer.parseInt(st.nextToken()); // 구슬 쌍
 
-		ArrayList<Integer>[] heavy = new ArrayList[N];
-		ArrayList<Integer>[] light = new ArrayList[N];
-
-		for(int i = 0; i < N; i++){
-			heavy[i] = new ArrayList<>();
-			light[i] = new ArrayList<>();
-		}
+		boolean[][] heavier = new boolean[N][N]; // heavier[i][j] = i가 j보다 무겁다?
 
 		for(int i = 0; i < M; i++){
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken()) - 1;
 			int b = Integer.parseInt(st.nextToken()) - 1;
 
-			// b < a
-			heavy[b].add(a);
-			light[a].add(b);
+			// a가 b보다 무겁다
+			heavier[a][b] = true;
+		}
+
+		// 플로이드 워샬로 간접적인 관계 추론
+		for(int k = 0; k < N; k++) {
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					if(heavier[i][k] && heavier[k][j]){
+						heavier[i][j] = true; // i > k > j
+					}
+				}
+			}
 		}
 
 		int count = 0;
 		for(int i = 0; i < N; i++){
-			int heavyCount = dfs(i, heavy, new boolean[N]);
-			int lightCount = dfs(i, light, new boolean[N]);
+			int heavyCount = 0; // i보다 무거운 구술 개수
+			int lightCount = 0; // i보다 가벼운 구슬 개수
+
+			for(int j = 0; j < N; j++){
+				if(heavier[i][j]) lightCount++;
+				if(heavier[j][i]) heavyCount++;
+			}
 			if(heavyCount > N / 2 || lightCount > N / 2){
 				count++;
 			}
 		}
 
 		System.out.println(count);
-	}
-
-	private static int dfs(int start, List<Integer>[] list, boolean[] visited){
-		int result = 0;
-		visited[start] = true;
-
-		for(int num : list[start]){
-			if(visited[num]) continue;
-			result += 1 + dfs(num, list, visited);
-		}
-
-		return result;
 	}
 
 }
