@@ -1,34 +1,36 @@
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
-public class Main {
+public class Main{
 
-    static int N;
+	static int N;
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        N = sc.nextInt(); // N자리 숫자
-        primeNumber(0, "");
-    }
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
 
-    private static void primeNumber(int cnt, String number){
-        if(cnt == N){
-            System.out.println(number);
-            return;
-        }
+		getPrimeNumber(0, 0);
+	}
 
-        for(int i = 1; i <= 9; i++){
-            if(!isValid(number + i)) continue;
-            primeNumber(cnt + 1, number + i);
-        }
-    }
+	private static void getPrimeNumber(int cnt, int num){
+		if(cnt == N){
+			System.out.println(num);
+			return;
+		}
 
-    private static boolean isValid(String number){
-        int tmp = Integer.parseInt(number);
-        if(tmp < 2) return false;
-        for(int i = 2; i <= Math.sqrt(tmp); i++){
-            if(tmp % i == 0) return false;
-        }
-        return true;
-    }
+		for(int i = 1; i <= 9; i++){
+			int tmp = num * 10 + i;
+			if(isValid(tmp)) getPrimeNumber(cnt + 1, tmp);
+		}
+	}
+
+	private static boolean isValid(int num){
+		if(num < 2) return false;
+		for(int i = 2; i <= Math.sqrt(num); i++){
+			if(num % i == 0) return false;
+		}
+
+		return true;
+	}
 }
