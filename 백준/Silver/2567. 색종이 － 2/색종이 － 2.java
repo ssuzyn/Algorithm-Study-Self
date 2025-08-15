@@ -1,45 +1,47 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
-	
-	static int[][] paper = new int[101][101];
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int N = sc.nextInt(); // 색종이 수
-		
-		for(int n = 0; n < N; n++) {
-			int y = sc.nextInt();
-			int x = sc.nextInt();
-			
-			
-			for(int i = 0; i < 10; i++) {
-				for(int j = 0; j < 10; j++) {
-					paper[x + i][y + j] = 1;
+	public static void main(String[] args)throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int N = Integer.parseInt(br.readLine());
+
+		boolean[][] board = new boolean[102][102];
+		int answer = 0;
+
+		for(int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+
+			for(int j = x; j < x + 10; j++) {
+				for(int k = y; k < y + 10; k++) {
+					board[j][k] = true;
 				}
 			}
 		}
-		
-		int cnt = 0;
-		int[][] direction = {{1, 0}, {0, 1}}; // 아래, 오른쪽 방향
-		
-		for(int i = 0; i <= 100; i++) {
-			for(int j = 0; j <= 100; j++) {
-				
-				for(int d = 0; d < 2; d++) {
-					int nx = i + direction[d][0];
-					int ny = j + direction[d][1];
-					
-					if(nx >= 0 && nx <= 100 && ny >= 0 && ny <= 100 && paper[nx][ny] != paper[i][j]) {
-						cnt++;
-					}
-				}
-				
+
+
+		// 세로 경계선 카운팅 (열 기준)
+		for(int i = 0; i < 101; i++) {
+			for(int j = 0; j < 101; j++) {
+				// 0->1 또는 1->0으로 변하는 지점이 경계선
+				if(board[i][j] != board[i][j+1]) answer++;
 			}
 		}
-		
-		System.out.println(cnt);
 
+		// 가로 경계선 카운팅 (행 기준)
+		for(int i = 0; i < 101; i++) {
+			for(int j = 0; j < 101; j++) {
+				// 0->1 또는 1->0으로 변하는 지점이 경계선
+				if(board[i][j] != board[i+1][j]) answer++;
+			}
+		}
+
+		System.out.println(answer);
 	}
 
 }
