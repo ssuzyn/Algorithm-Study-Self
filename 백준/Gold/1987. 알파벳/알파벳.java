@@ -1,46 +1,47 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
-	static int R, C, maxCnt = 0;
+	static int R, C, answer;
 	static char[][] map;
-	static boolean[] alphabet = new boolean[26];
-	static int[] dx = {0,0,-1,1};
-	static int[] dy = {-1,1,0,0};
-	
-	
-	public static void main(String[] args) throws IOException {
+	static int[][] dir = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+
+	public static void main(String[] args)throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String[] input = br.readLine().split(" ");
-		R = Integer.parseInt(input[0]); // 세로
-		C = Integer.parseInt(input[1]); // 가로
-		
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		R = Integer.parseInt(st.nextToken());
+		C = Integer.parseInt(st.nextToken());
 		map = new char[R][C];
-		for(int i = 0; i < R; i++) {
+
+		for(int i = 0; i < R; i++){
 			map[i] = br.readLine().toCharArray();
 		}
-		
-		alphabet[map[0][0] - 'A'] = true;
-		dfs(0, 0, 1);
 
-		System.out.println(maxCnt);
+		answer = Integer.MIN_VALUE;
+		boolean[] alphabet = new boolean[26];
+		alphabet[map[0][0] - 'A'] = true;
+		dfs(0, 0, 1, alphabet);
+
+		System.out.println(answer);
 	}
-	
-	private static void dfs(int x, int y, int cnt) {
-		maxCnt = Math.max(maxCnt, cnt); // 최대 칸 수 갱신
-		
-		for(int i = 0; i < 4; i++) {
-			int nx = x + dx[i];
-			int ny = y + dy[i];
-			
-			if(nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
-			if(alphabet[map[nx][ny] - 'A']) continue; // 이미 방문한 알파벳은 무시
-			
-			alphabet[map[nx][ny] - 'A'] = true;
-			dfs(nx, ny, cnt + 1);
-			alphabet[map[nx][ny] - 'A'] = false; // 백트래킹
+
+	private static void dfs(int x, int y, int count, boolean[] alphabet){
+		if(answer < count) answer = count;
+
+		for(int[] d : dir){
+			int nx = x + d[0];
+			int ny = y + d[1];
+			if(nx < 0 || ny < 0 || nx >= R || ny >= C) continue;
+
+			int idx = map[nx][ny] - 'A';
+			if(!alphabet[idx]){
+				alphabet[idx] = true;
+				dfs(nx, ny, count + 1, alphabet);
+				alphabet[idx] = false;
+			}
 		}
 	}
 
