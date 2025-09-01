@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -12,16 +10,6 @@ public class Main {
 	static int N, L, R;
 	static int[][] nations;
 	static boolean[][] visited;
-
-	static class Team{
-		List<int[]> positions; // 연합에 속한 나라들의 위치
-		int totalPeople;       // 총 인구수
-
-		Team(){
-			this.positions = new ArrayList<>();
-			this.totalPeople = 0;
-		}
-	}
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -39,45 +27,37 @@ public class Main {
 		}
 
 		int days = 0;
-
 		while(true){
+			boolean check = false;
 			visited = new boolean[N][N];
-			List<Team> teams = new ArrayList<>();
 
 			for(int i = 0; i < N; i++){
 				for(int j = 0; j < N; j++){
 					if(!visited[i][j]){
-						Team team = bfs(i, j);
-						if(team.positions.size() > 1) teams.add(team);
+						if(bfs(i, j) > 1){
+							check = true;
+						}
 					}
 				}
 			}
 
-			// 더 이상 연합이 형성되지 않으면 종료
-			if(teams.isEmpty()) break;
+			if(!check) break;
 
-			// 각 연합의 인구수 업데이트
-			for(Team team : teams){
-				int avgPeople = team.totalPeople / team.positions.size();
-				for(int[] pos : team.positions){
-					nations[pos[0]][pos[1]] = avgPeople;
-				}
-			}
 			days++;
 		}
 
 		System.out.println(days);
 	}
 
-	private static Team bfs(int x, int y){
+	private static int bfs(int x, int y){
 		int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 		Queue<int[]> q = new LinkedList<>();
-		Team team = new Team();
+		Queue<int[]> team = new LinkedList<>();
 
 		q.add(new int[]{x, y});
+		team.add(new int[]{x, y});
+		int totalPeople = nations[x][y];
 		visited[x][y] = true;
-		team.positions.add(new int[]{x, y});
-		team.totalPeople += nations[x][y];
 
 		while(!q.isEmpty()){
 			int[] cur = q.poll();
@@ -94,12 +74,21 @@ public class Main {
 				if(L <= diff && diff <= R){
 					q.add(new int[]{nx, ny});
 					visited[nx][ny] = true;
-					team.positions.add(new int[]{nx, ny});
-					team.totalPeople += nations[nx][ny];
+					team.add(new int[]{nx, ny});
+					totalPeople += nations[nx][ny];
 				}
 			}
 		}
 
-		return team;
+		int cnt = team.size();
+		if(cnt > 1){
+			int avg = totalPeople / cnt;
+			while(!team.isEmpty()){
+				int[] cur = team.poll();
+				nations[cur[0]][cur[1]] = avg;
+			}
+		}
+
+		return cnt;
 	}
 }
