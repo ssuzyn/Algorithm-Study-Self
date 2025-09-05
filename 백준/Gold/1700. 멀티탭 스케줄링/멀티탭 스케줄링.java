@@ -1,76 +1,72 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
-	
-	static int[] tap;
-	static int[] scheduler;
 
-	public static void main(String[] args) throws IOException{
+	static int N, K;
+	static int[] scheduler;
+	static List<Integer> flug;
+
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        
-        int N = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
-        
-        st = new StringTokenizer(br.readLine());
-        tap = new int[N];
-        scheduler = new int[K];
-        for(int i = 0; i < K; i++) {
-        	scheduler[i] = Integer.parseInt(st.nextToken());
-        }
-        
-        int count = 0;
-        for(int i = 0; i < K; i++) {
-        	int tmp = scheduler[i];
-        	boolean pass = false;
-        	
-        	for(int j = 0; j < N; j++) {
-        		
-        		if(tap[j] == tmp) { // 사용할 전기용품이 이미 꽂혀 있는 경우
-        			pass = true;
-        			break;
-        		}
-        		else if(tap[j] == 0) { // 빈자리가 있는 경우
-        			tap[j] = tmp;
-        			pass = true;
-        			break;
-        		}
-        		
-        	}
-        	
-        	if(!pass) {
-        		int index = exchange(i + 1);
-        		tap[index] = tmp;
-        		count++;
-        	}
-        }
-        
-        System.out.println(count);
-        
-        
-	}
-	
-	public static int exchange(int index) {
-		int tapIndex = 0;
-		int maxLater = -1;
-		for(int i = 0; i < tap.length; i++) {
-			int tmp = 0;
-			for(int j = index; j < scheduler.length; j++) {
-				if(scheduler[j] == tap[i]) break;
-				tmp++;
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken()); // 멀티탭 구멍 개수
+		K = Integer.parseInt(st.nextToken()); // 사용 횟수
+		scheduler = new int[K];
+		flug = new ArrayList<>();
+
+		st = new StringTokenizer(br.readLine());
+		for(int i = 0; i < K; i++){
+			scheduler[i] = Integer.parseInt(st.nextToken());
+		}
+
+		int answer = 0;
+		for(int i = 0; i < K; i++){
+			if(flug.contains(scheduler[i])) continue;
+
+			if(flug.size() < N){
+				// 빈자리가 있으면 그냥 꽂기
+				flug.add(scheduler[i]);
 			}
-			
-			if(tmp > maxLater) {
-				tapIndex = i;
-				maxLater = tmp;
+			else{
+				// 현재 기기가 이미 꽂혀있으면 skip
+				exchangePosition(i);
+				flug.add(scheduler[i]);
+				answer++;
 			}
 		}
-		
-		return tapIndex;
-	}
-	
 
+		System.out.println(answer);
+	}
+
+	private static void exchangePosition(int start) {
+		int removeIdx = 0;
+		int farthest = start;
+
+		// 콘센트에 꽂힌 각 기기별로 다음 사용 시점 찾기
+		for(int i = 0; i < flug.size(); i++) {
+			int nextUse = Integer.MAX_VALUE; // 사용되지 않으면 최대값
+
+			// start부터 뒤를 보면서 이 기기가 언제 나오는지 찾기
+			for(int j = start; j < K; j++) {
+				if(scheduler[j] == flug.get(i)) {
+					nextUse = j;
+					break;
+				}
+			}
+
+			// 가장 늦게 사용되는(또는 사용되지 않는) 기기 찾기
+			if(nextUse > farthest) {
+				farthest = nextUse;
+				removeIdx = i;
+			}
+		}
+
+		flug.remove(removeIdx);
+	}
 }
