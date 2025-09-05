@@ -27,14 +27,15 @@ public class Main {
 
 		int answer = 0;
 		for(int i = 0; i < K; i++){
+			// 이미 꽂혀있는 기기는 스킵
 			if(flug.contains(scheduler[i])) continue;
 
 			if(flug.size() < N){
-				// 빈자리가 있으면 그냥 꽂기
+				// 빈 자리가 있으면 바로 꽂기
 				flug.add(scheduler[i]);
 			}
 			else{
-				// 현재 기기가 이미 꽂혀있으면 skip
+				// 콘센트가 가득참 → 가장 늦게 사용될 기기를 뽑고 새 기기 꽂기
 				exchangePosition(i);
 				flug.add(scheduler[i]);
 				answer++;
