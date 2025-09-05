@@ -4,34 +4,37 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        char[] line = br.readLine().toCharArray();
-        char[] bomb = br.readLine().toCharArray();
-        StringBuilder stack = new StringBuilder();
 
-        for (int i = 0; i < line.length; i++) {
-            stack.append(line[i]); // 스택처럼 사용
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		char[] input = br.readLine().toCharArray();
+		char[] bomb = br.readLine().toCharArray();
 
-            if (stack.length() >= bomb.length) { // 폭탄 문자열과 길이 비교
-                boolean canPop = true;
-                for (int j = 0; j < bomb.length; j++) {
-                    if (stack.charAt(stack.length() - bomb.length + j) != bomb[j]) {
-                        canPop = false;
-                        break;
-                    }
-                }
-                if (canPop) {
-                    stack.delete(stack.length() - bomb.length, stack.length()); // 폭탄 문자열 삭제
-                }
-            }
-        }
+		StringBuilder stack = new StringBuilder();
+		for(char tmp : input){
+			stack.append(tmp);
 
-        // 최종 출력
-        if (stack.length() == 0) {
-            System.out.println("FRULA");
-        } else {
-            System.out.println(stack.toString());
-        }
-    }
+			if(stack.length() >= bomb.length){
+				boolean isSame = true;
+
+				for(int j = 0; j < bomb.length; j++){
+					if(stack.charAt(stack.length() - 1 - j) != bomb[bomb.length - 1 - j]){
+						isSame = false;
+						break;
+					}
+				}
+
+				if(isSame){
+					stack.delete(stack.length() - bomb.length, stack.length());
+				}
+			}
+		}
+
+		if(stack.length() == 0){
+			System.out.println("FRULA");
+		}
+		else{
+			System.out.println(stack);
+		}
+	}
 }
