@@ -5,121 +5,114 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-/**
- * 메모리: 137780 KB
- * 시간: 264 ms
- */
 public class Main {
 
 	static int N, answer;
-	static boolean[][] visited;
 	static int[][] map;
-	static int[][] d = { { -1, 0 }, { 0, 1 }, { 1, 0 }, { 0, -1 } };
+	static boolean[][] visited;
+	static int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		map = new int[N][N];
-		visited = new boolean[N][N];
 
-
-		for (int i = 0; i < N; i++) {
+		for(int i = 0; i < N; i++){
 			StringTokenizer st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < N; j++) {
+			for(int j = 0; j < N; j++){
 				map[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
-		
-		// 섬 구분해주기
-		int num = 1;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if(map[i][j] == 1 && !visited[i][j]) {
-					setIsland(i, j, num++);
+
+		int group = 1;
+		visited = new boolean[N][N];
+		for(int i = 0; i < N; i++){
+			for(int j = 0; j < N; j++){
+				if(map[i][j] == 1 && !visited[i][j]){
+					setLandGroup(i, j, group++);
 				}
 			}
 		}
-		
-		// 섬과 섬 사이의 최단거리 구하기
+
 		answer = Integer.MAX_VALUE;
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				if(map[i][j] > 0 && isEdge(i, j)) { // 섬이면서 바다와 경계에 있는 경우만 탐색 시작
+		for(int i = 0; i < N; i++){
+			for(int j = 0; j < N; j++){
+				if(map[i][j] > 0 && isEdge(i, j)){
 					visited = new boolean[N][N];
 					findBridge(i, j, map[i][j]);
 				}
 			}
 		}
-		
+
 		System.out.println(answer);
 	}
-	
-	private static void setIsland(int x, int y, int num) {
+
+	private static boolean isValid(int x, int y){
+		return x >= 0 && x < N && y >= 0 && y < N;
+	}
+
+	private static void setLandGroup(int x, int y, int group){
 		Queue<int[]> q = new LinkedList<>();
-		q.add(new int[] {x, y});
+		q.add(new int[]{x, y});
 		visited[x][y] = true;
-		map[x][y] = num;
-		
-		while(!q.isEmpty()) {
+		map[x][y] = group;
+
+		while(!q.isEmpty()){
 			int[] cur = q.poll();
-			
-			for(int i = 0; i < 4; i++) {
-				int nx = cur[0] + d[i][0];
-				int ny = cur[1] + d[i][1];
-				
-				if(nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny]) continue;
-				if(map[nx][ny] == 1) {
-					visited[nx][ny] = true;
-					map[nx][ny] = num;
-					q.add(new int[] {nx, ny});
-				}
+			x = cur[0];
+			y = cur[1];
+
+			for(int[] d : dir){
+				int nx = x + d[0];
+				int ny = y + d[1];
+
+				if(!isValid(nx, ny) || visited[nx][ny] || map[nx][ny] == 0) continue;
+
+				visited[nx][ny] = true;
+				map[nx][ny] = group;
+				q.add(new int[]{nx, ny});
 			}
 		}
 	}
-	
-	// 바다와 인접한 섬인지 확인하는 함수
-	private static boolean isEdge(int x, int y) {
-		for(int i = 0; i < 4; i++) {
-			int nx = x + d[i][0];
-			int ny = y + d[i][1];
-			
-			// 범위 안에 있고, 바다(0)가 인접해있으면 true 반환
-			if(nx >= 0 && ny >= 0 && nx < N && ny < N && map[nx][ny] == 0) {
-				return true;
-			}
+
+	private static boolean isEdge(int x, int y){
+		for(int[] d : dir){
+			int nx = x + d[0];
+			int ny = y + d[1];
+
+			if(isValid(nx, ny) && map[nx][ny] == 0) return true;
 		}
+
 		return false;
 	}
-	
+
 	private static void findBridge(int x, int y, int group) {
 		Queue<int[]> q = new LinkedList<>();
 		q.add(new int[] {x, y, 0});
 		visited[x][y] = true;
-		
-		while(!q.isEmpty()) {
+
+		while (!q.isEmpty()){
 			int[] cur = q.poll();
-			int bridge = cur[2];
-			
-			if(bridge >= answer) continue; 
-			
-			for(int i = 0; i < 4; i++) {
-				int nx = cur[0] + d[i][0];
-				int ny = cur[1] + d[i][1];
-				
-				if(nx < 0 || ny < 0 || nx >= N || ny >= N || visited[nx][ny]) continue;
-				if(map[nx][ny] == group) continue;
-				
-				if(map[nx][ny] == 0) {
+			x = cur[0];
+			y = cur[1];
+			int length = cur[2];
+
+			if (length >= answer) continue;
+
+			for (int[] d : dir) {
+				int nx = x + d[0];
+				int ny = y + d[1];
+
+				if (!isValid(nx, ny) || visited[nx][ny] || map[nx][ny] == group) continue;
+				if(map[nx][ny] == 0){
 					visited[nx][ny] = true;
-					q.add(new int[] {nx, ny, bridge + 1});
+					q.add(new int[]{nx, ny, length + 1});
 				}
-				else {
-					answer = Math.min(answer, bridge);
+				else{
+					answer = Math.min(answer, length);
 				}
-				
+
 			}
 		}
 	}
-		
-
 }
