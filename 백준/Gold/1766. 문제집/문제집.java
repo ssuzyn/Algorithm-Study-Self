@@ -11,18 +11,17 @@ public class Main {
 	static int N, M;
 	static int[] inDegree;
 	static List<Integer>[] problem;
-	static List<Integer> answer;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		StringBuilder sb = new StringBuilder();
-		
-		N = Integer.parseInt(st.nextToken()); // 문제의 수 
-		M = Integer.parseInt(st.nextToken()); // 문제 정보의 개수 
+
+		N = Integer.parseInt(st.nextToken()); // 문제의 수
+		M = Integer.parseInt(st.nextToken()); // 문제 정보의 개수
 		inDegree = new int[N + 1];
 		problem = new ArrayList[N + 1];
-		
+
 		for(int i = 1; i <= N; i++) {
 			problem[i] = new ArrayList<>();
 		}
@@ -33,24 +32,25 @@ public class Main {
 			problem[a].add(b); // A번 문제 < B번 문제
 			inDegree[b]++;
 		}
-		
+
 		// 위상 정렬 시작
 		PriorityQueue<Integer> q = new PriorityQueue<>();
-		
+
 		for(int i = 1; i <= N; i++) {
 			if(inDegree[i] == 0) q.add(i);
 		}
-		
+
 		while(!q.isEmpty()) {
 			int cur = q.poll();
 			sb.append(cur + " ");
-			
+
 			for(int next : problem[cur]) {
 				inDegree[next]--;
 				if(inDegree[next] == 0) q.add(next);
 			}
 		}
+
 		System.out.println(sb);
 	}
-	
+
 }
