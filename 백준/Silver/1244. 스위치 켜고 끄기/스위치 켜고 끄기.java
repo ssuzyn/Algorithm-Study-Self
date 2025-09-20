@@ -41,25 +41,25 @@ public class Main {
 
 	private static void switchByMale(int num){
 		for(int i = num; i <= N; i+=num){
-			if(light[i] == 0) light[i] = 1;
-			else light[i] = 0;
+			light[i] = 1 - light[i];
 		}
 	}
 
 	private static void switchByFemale(int num){
+		light[num] = 1 - light[num];
 		int left = num - 1;
 		int right = num + 1;
+
 		while(1 <= left && right <= N){
-			if(light[left] == light[right]){
+			if(light[left] != light[right]){
+				break;
+			}
+			else{
+				light[left] = 1 - light[left];
+				light[right] = 1 - light[right];
 				left--;
 				right++;
 			}
-			else break;
-		}
-
-		for(int i = left + 1; i < right; i++){
-			if(light[i] == 0) light[i] = 1;
-			else light[i] = 0;
 		}
 	}
 
